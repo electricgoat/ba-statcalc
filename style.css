@@ -1,0 +1,54 @@
+/* CharacterStatCalc */
+.character-stattable {
+	width: 100%;
+	min-width: 575px;
+	max-width: 740px;
+}	
+	
+.character-stattable .stattable-controls {
+	min-height: 34px;
+	font-size: 15px;
+}
+	
+.character-stattable .stattable-controls .stattable-level-selector {
+	float: right;
+	margin: 2px 0 1px;
+}
+	
+.character-stattable .stattable-controls .stattable-level {
+	width: 44px;
+	font-size: 17px;
+	border: none;
+	background-color: rgba(255, 255, 255, 1);
+	border-radius: 3px;
+}	
+	
+.character-stattable .stattable-controls .active {
+	
+}
+
+.character-stattable .stattable-controls .inactive {
+	filter: grayscale(1);
+}
+
+.character-stattable .stattable-controls img {
+	padding: 4px 1px;
+}
+	
+.character-stattable .stattable-controls img:hover {
+	filter: drop-shadow(0 2px 2px rgb(0 0 0 / 25%));
+	transform: translateY(-1px);
+	transition: .15s;
+	cursor: pointer;
+}
+
+@media (min-width: 1200px) {
+	table.character-stattable th {
+		width: 16%;
+	}
+	
+	table.character-stattable td[class^="stat-"] {
+		width: 9%;
+	}
+	
+}	
