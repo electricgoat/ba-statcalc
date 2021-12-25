@@ -35,7 +35,8 @@
 	padding: 4px 1px;
 }
 	
-.character-stattable .stattable-controls img:hover {
+.character-stattable .stattable-controls img:hover,
+.character-stattable .stattable-equipment img:hover {
 	filter: drop-shadow(0 2px 2px rgb(0 0 0 / 25%));
 	transform: translateY(-1px);
 	transition: .15s;
@@ -52,3 +53,13 @@
 	}
 	
 }	
+
+
+.character-stattable .stattable-equipment .active {
+	
+}
+
+.character-stattable .stattable-equipment .inactive {
+	filter: grayscale(1);
+	opacity: 0.5;
+}

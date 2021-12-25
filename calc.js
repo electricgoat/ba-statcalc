@@ -9,7 +9,6 @@ const rarity_bonus = {
 	"hp"		: [0, 0, 500, 	1200, 2100, 3500 ]
 };
 
-//const equipment = {};
 const equipment_stats = {'hat' : {
 //	param			   N	T1		T2		T3		T4		T5		T6
 	'attack%' 		: [0,	8, 		13,		18,		25,		30,		35 		],
@@ -97,8 +96,10 @@ var tableCounter = 0;
 $( document ).ready(function() {
 	initStatCalc();
 	$(".stattable-controls input").on("change mouseup keyup click", function(){levelChange($(this).closest("table"));});
-	$(".stattable-equipment input").on("change mouseup keyup click", function(){equipmentChange($(this).closest("table"));});
 	$(".stattable-rarity-selector").children("img").on("click", function(){rarityChange($(this).closest("table"),$(this).attr('data-rarity'));})
+
+	$(".stattable-equipment input").on("change mouseup keyup click", function(){equipmentChange($(this).closest("table"));});
+	$(".stattable-equipment").find("img").on("click", function(){equipmentChange($(this).closest("table"),$(this).parent().attr('data-slot'));})
 });
 	
 
@@ -128,12 +129,12 @@ function initStatCalc(){
 		stats[id].healing_max	= parseInt(healing_data[1]) > 0 ? parseInt(healing_data[1]) : null;
 
 		stats[id].accuracy	= parseInt($(this).find(".stat-accuracy").html()) > 0 ? parseInt($(this).find(".stat-accuracy").html()) : null;
-		stats[id].accuracy	= parseInt($(this).find(".stat-evasion").html()) > 0 ? parseInt($(this).find(".stat-evasion").html()) : null;
-		stats[id].accuracy	= parseInt($(this).find(".stat-crit_rate").html()) > 0 ? parseInt($(this).find(".stat-crit_rate").html()) : null;
-		stats[id].accuracy	= parseInt($(this).find(".stat-crit_damage").html()) > 0 ? parseInt($(this).find(".stat-crit_damage").html()) : null;
-		stats[id].accuracy	= parseInt($(this).find(".stat-stability").html()) > 0 ? parseInt($(this).find(".stat-stability").html()) : null;
-		stats[id].accuracy	= parseInt($(this).find(".stat-cc_str").html()) > 0 ? parseInt($(this).find(".stat-cc_str").html()) : null;
-		stats[id].accuracy	= parseInt($(this).find(".stat-cc_res").html()) > 0 ? parseInt($(this).find(".stat-cc_res").html()) : null;
+		stats[id].evasion	= parseInt($(this).find(".stat-evasion").html()) > 0 ? parseInt($(this).find(".stat-evasion").html()) : null;
+		stats[id].crit_rate	= parseInt($(this).find(".stat-crit_rate").html()) > 0 ? parseInt($(this).find(".stat-crit_rate").html()) : null;
+		stats[id].crit_damage	= parseInt($(this).find(".stat-crit_damage").html()) > 0 ? parseInt($(this).find(".stat-crit_damage").html()) : null;
+		stats[id].stability	= parseInt($(this).find(".stat-stability").html()) > 0 ? parseInt($(this).find(".stat-stability").html()) : null;
+		stats[id].cc_str	= parseInt($(this).find(".stat-cc_str").html()) > 0 ? parseInt($(this).find(".stat-cc_str").html()) : null;
+		stats[id].cc_res	= parseInt($(this).find(".stat-cc_res").html()) > 0 ? parseInt($(this).find(".stat-cc_res").html()) : null;
 
 		
 		//stats[$(this).attr('id')] = JSON.parse($(this).attr('stat-data'));
@@ -183,18 +184,17 @@ function initStatCalc(){
 			var equipmentTable = $('.character-equipment');
 			
 			for (let index = 1; index <= 3; index++) {
-				equipment[index] = {'type': equipmentTable.find(".equipment-"+index).attr('data-value'), 'image': equipmentTable.find(".equipment-"+index).html()};
+				equipment[index] = {'type': equipmentTable.find(".equipment-"+index).attr('data-value'), 'image': equipmentTable.find(".equipment-"+index).find("a").html()};
+				var max_tier = (index < 3)?6:5;
 
-				$(this).find(".stattable-equipment td").append('<div class="equipment-item equipment-'+index+'" data-type="'+equipment[index].type+'">' + equipment[index].image + '<span class="stattable-equipment-tier-selector">Tier: <input class="stattable-tier" type="number" value="1" step="1" min="1" max="'+( (index < 3)?6:5 )+'" /></span>' + '</div>'); 
+				$(this).find(".stattable-equipment td").append('<div class="equipment-item equipment-'+index+'" data-type="'+equipment[index].type+'" data-slot="'+index+'">' + equipment[index].image + '<span class="stattable-equipment-tier-selector">Tier: <input class="stattable-tier" type="number" value="'+max_tier+'" step="1" min="1" max="'+max_tier+'" /></span>' + '</div>'); 
 			}
 
 			$(this).find(".stattable-equipment").css( "display", "" );
 			
 
-
-
 			
-			equipmentChange($(this), stats[id].rarity);
+			equipmentChange($(this));
 		}
 		else
 		{ console.log('StatCalc - init cancelled due to incomplete data'); }
@@ -215,10 +215,14 @@ function levelChange (statTable){
 	statTableRecalc(statTable.attr('id'));
 }	
 
-function equipmentChange (statTable){
+function equipmentChange (statTable, toggleSlot = false){
 	console.log('changing equipment in table '+statTable.attr('id'));
 
-	
+	//console.log(toggleSlot);
+	if (toggleSlot) {
+		var item_slot = statTable.find(".equipment-"+toggleSlot);
+		(item_slot.hasClass("inactive")) ? item_slot.addClass('active').removeClass('inactive') : item_slot.addClass('inactive').removeClass('active');
+	}
 	
 	//var level = !isNaN(parseInt(statTable.find(".stattable-level").val())) ? parseInt(statTable.find(".stattable-level").val()) : 1 ;
 	
@@ -250,22 +254,24 @@ function statTableRecalc(id){
 
 
 	//Equipment
-	var equipment_bonus = {};
+	var equipment_bonus = { };
+	equipment_stats_list.forEach(element => {equipment_bonus[element] = 0;});
+	
 
 	for (let index = 1; index <= 3; index++) {
-		var eq_type = statTable.find(".stattable-equipment .equipment-"+index+"").attr('data-type');
-		var eq_tier = statTable.find(".stattable-equipment .equipment-"+index+" input").val();
-		console.log ('Using equipment type ' + eq_type + ' at T' + eq_tier + ' in slot ' + index );
+		if (!statTable.find(".stattable-equipment .equipment-"+index+"").hasClass("inactive"))
+		{
+			var eq_type = statTable.find(".stattable-equipment .equipment-"+index+"").attr('data-type');
+			var eq_tier = statTable.find(".stattable-equipment .equipment-"+index+" input").val();
+			console.log ('Using equipment type ' + eq_type + ' at T' + eq_tier + ' in slot ' + index );
 
-		equipment_stats_list.forEach(element => {
-			equipment_bonus[element] = ((typeof equipment_bonus[element] !== 'undefined')?equipment_bonus[element]:0) + ((typeof equipment_stats[eq_type][element] !== 'undefined' && typeof equipment_stats[eq_type][element][eq_tier] !== 'undefined')?equipment_stats[eq_type][element][eq_tier]:0);
-		});
+			equipment_stats_list.forEach(element => {
+				equipment_bonus[element] += ((typeof equipment_stats[eq_type][element] !== 'undefined' && typeof equipment_stats[eq_type][element][eq_tier] !== 'undefined')?equipment_stats[eq_type][element][eq_tier]:0);
+			});
 
-		console.log(equipment_bonus);
+			console.log(equipment_bonus);
+		}
 	};
-
-
-
 
 
 
@@ -274,16 +280,32 @@ function statTableRecalc(id){
 	statTable.find(".stat-defense").html(totalStat(	stats[id].level, stats[id].rarity, 'defense', 	stats[id].defense_min, stats[id].defense_max, equipment_bonus['defense%'], equipment_bonus['defense']));
 	statTable.find(".stat-hp").html(totalStat(		stats[id].level, stats[id].rarity, 'hp', 		stats[id].hp_min, stats[id].hp_max, equipment_bonus['hp%'], equipment_bonus['hp']));
 	statTable.find(".stat-healing").html(totalStat(	stats[id].level, stats[id].rarity, 'healing', 	stats[id].healing_min, stats[id].healing_max, equipment_bonus['healing%'], equipment_bonus['healing']));
+
+	statTable.find(".stat-accuracy").html(addBonus( 	stats[id].accuracy,	 	0, 							equipment_bonus['accuracy'] ));
+	//statTable.find(".stat-evasion").html(addBonus( 	stats[id].evasion,	 	0, 							0 ));
+	statTable.find(".stat-accuracy").html(addBonus( 	stats[id].accuracy,	 	0, 							equipment_bonus['accuracy'] ));
+	statTable.find(".stat-crit_rate").html(addBonus( 	stats[id].crit_rate,	0, 							equipment_bonus['crit_rate'] ));
+	statTable.find(".stat-crit_damage").html(addBonus( 	stats[id].crit_damage,	0,		 					equipment_bonus['crit_damage'] ));
+	//statTable.find(".stat-stability").html(addBonus( 	stats[id].stability,	0, 							0 ));
+	statTable.find(".stat-cc_str").html(addBonus( 		stats[id].cc_str,	 	equipment_bonus['cc_str'], 	0 ));
+	statTable.find(".stat-cc_res").html(addBonus( 		stats[id].cc_res,	 	equipment_bonus['cc_res'], 	0 ));
+
+
+
 }
 
 function totalStat(level,rarity,statName,val1,val100,bonus_percent,bonus_flat){
-	console.log (statName + ': Using flat bonus ' + bonus_flat);
-	console.log (statName + ': Using % bonus ' + bonus_percent);
+	//console.log (statName + ': Using flat bonus ' + bonus_flat);
+	//console.log (statName + ': Using % bonus ' + bonus_percent);
 
 	var stat_value = calcStat(level,rarity,statName,val1,val100);
 	stat_value = (stat_value+bonus_flat)*(1 + bonus_percent/100);
 
 	return Math.ceil(stat_value);
+}
+
+function addBonus(stat_value,bonus_percent,bonus_flat){
+	return Math.ceil((stat_value+bonus_flat)*(1 + bonus_percent/100));
 }
 	
 	
