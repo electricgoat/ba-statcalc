@@ -2,6 +2,8 @@
 const level_cap = 75;
 const fix_ingame_stats = true; //attempt to recalculate raw numbers if provided data looks like ingame stats
 
+
+
 const rarity_bonus = {
 	"attack"	: [0, 0, 1000,	2200, 3600, 5300 ],
 	"defense"	: [0, 0, 0,		0,    0, 	0 	 ],
@@ -212,7 +214,7 @@ function levelChange (statTable){
 	
 	stats[statTable.attr('id')].level = level;
 	
-	statTableRecalc(statTable.attr('id'));
+	statTableRecalc(statTable);
 }	
 
 function equipmentChange (statTable, toggleSlot = false){
@@ -224,17 +226,9 @@ function equipmentChange (statTable, toggleSlot = false){
 		(item_slot.hasClass("inactive")) ? item_slot.addClass('active').removeClass('inactive') : item_slot.addClass('inactive').removeClass('active');
 	}
 	
-	//var level = !isNaN(parseInt(statTable.find(".stattable-level").val())) ? parseInt(statTable.find(".stattable-level").val()) : 1 ;
-	
-	//if (level < 1) 	 { statTable.find(".stattable-level").val(1);	level = 1; }
-	//if (level > 100) { statTable.find(".stattable-level").val(100); level = 100; }
-	
-	//stats[statTable.attr('id')].level = level;
-	
-	statTableRecalc(statTable.attr('id'));
+	statTableRecalc(statTable);
 }	
 	
-
 function rarityChange (statTable, rarity){
 	//console.log('changing RARITY in table '+statTable.attr('id')+' to '+rarity);
 	
@@ -244,13 +238,13 @@ function rarityChange (statTable, rarity){
 		($(this).attr('data-rarity') <= rarity) ? $(this).addClass('active').removeClass('inactive') : $(this).addClass('inactive').removeClass('active');
 	});
 	
-	statTableRecalc(statTable.attr('id'));
+	statTableRecalc(statTable);
 }
 	
 
-function statTableRecalc(id){
+function statTableRecalc(statTable){
 	//console.log(id+' recalc called');
-	var statTable = $('#'+id);
+	var id = statTable.attr('id');
 
 
 	//Equipment
@@ -294,6 +288,7 @@ function statTableRecalc(id){
 
 }
 
+
 function totalStat(level,rarity,statName,val1,val100,bonus_percent,bonus_flat){
 	//console.log (statName + ': Using flat bonus ' + bonus_flat);
 	//console.log (statName + ': Using % bonus ' + bonus_percent);
@@ -303,6 +298,7 @@ function totalStat(level,rarity,statName,val1,val100,bonus_percent,bonus_flat){
 
 	return Math.ceil(stat_value);
 }
+
 
 function addBonus(stat_value,bonus_percent,bonus_flat){
 	return Math.ceil((stat_value+bonus_flat)*(1 + bonus_percent/100));
