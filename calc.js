@@ -1,7 +1,6 @@
 /* Character stat calc - start */
 const level_cap = 75;
-const fix_ingame_stats = true; //attempt to recalculate raw numbers if provided data looks like ingame stats
-
+const fix_ingame_stats = true; //estimate raw numbers if provided data is sourced ingame
 
 
 const rarity_bonus = {
@@ -86,6 +85,12 @@ const equipment_stats = {'hat' : {
 	},
 
 };
+
+// Equipment max levels per tier
+const epuipment_level_preset = {1:10, 2:20, 3:30, 4:40, 5:45, 6:50};
+//Max  tier for Weapon, Equipment 1, 2, 3
+const max_tier = [3, 6, 6, 5];
+
 const equipment_stats_list = Object.keys(equipment_stats.hat);
 
 
@@ -142,31 +147,22 @@ function initStatCalc(){
 		//stats[$(this).attr('id')] = JSON.parse($(this).attr('stat-data'));
 		if (!hasNull(stats[id])) 
 		{
-			// Data sanity check to make sure actual raw numbers were provided
-			if (fix_ingame_stats && (stats[id].attack_max/stats[id].attack_min < 9))
+			// Estimate raw numbers
+			if (fix_ingame_stats && ($(this).attr('data-source') == 'ingame'))
 			{ 
-				console.log('StatCalc - Attack data provided is probably NOT a raw number, consider updating data'); 
+				console.log('StatCalc - Data source is set to ingame, calculator will attempt to estimate RAW values'); 
 				fixedStats = calcReverseStat(level_cap,stats[id].rarity,'attack',stats[id].attack_min,stats[id].attack_max);
 				stats[id].attack_min = fixedStats[0];
 				stats[id].attack_max = fixedStats[1];
-			}
-			if (fix_ingame_stats && (stats[id].defense_max/stats[id].defense_min < 5.5))
-			{ 
-				console.log('StatCalc - Defense data provided is probably NOT a raw number, consider updating data'); 
+
 				fixedStats = calcReverseStat(level_cap,stats[id].rarity,'defense',stats[id].defense_min,stats[id].defense_max);
 				stats[id].defense_min = fixedStats[0];
 				stats[id].defense_max = fixedStats[1];
-			}
-			if (fix_ingame_stats && (stats[id].hp_max/stats[id].hp_min < 7.4))
-			{ 
-				console.log('StatCalc - HP data provided is probably NOT a raw number, consider updating data');
+
 				fixedStats = calcReverseStat(level_cap,stats[id].rarity,'hp',stats[id].hp_min,stats[id].hp_max);
 				stats[id].hp_min = fixedStats[0];
 				stats[id].hp_max = fixedStats[1];
-			}
-			if (fix_ingame_stats && (stats[id].healing_max/stats[id].healing_min < 2.7))
-			{ 
-				console.log('StatCalc - Healing data provided is probably NOT a raw number, consider updating data');
+
 				fixedStats = calcReverseStat(level_cap,stats[id].rarity,'healing',stats[id].healing_min,stats[id].healing_max);
 				stats[id].healing_min = fixedStats[0];
 				stats[id].healing_max = fixedStats[1];
@@ -187,9 +183,9 @@ function initStatCalc(){
 			
 			for (let index = 1; index <= 3; index++) {
 				equipment[index] = {'type': equipmentTable.find(".equipment-"+index).attr('data-value'), 'image': equipmentTable.find(".equipment-"+index).find("a").html()};
-				var max_tier = (index < 3)?6:5;
+				//var max_tier = (index < 3)?6:5;
 
-				$(this).find(".stattable-equipment td").append('<div class="equipment-item equipment-'+index+'" data-type="'+equipment[index].type+'" data-slot="'+index+'">' + equipment[index].image + '<span class="stattable-equipment-tier-selector">Tier: <input class="stattable-tier" type="number" value="'+max_tier+'" step="1" min="1" max="'+max_tier+'" /></span>' + '</div>'); 
+				$(this).find(".stattable-equipment td").append('<div class="equipment-item equipment-'+index+'" data-type="'+equipment[index].type+'" data-slot="'+index+'">' + equipment[index].image + '<span class="stattable-equipment-tier-selector">Tier: <input class="stattable-tier" type="number" value="'+max_tier[index]+'" step="1" min="1" max="'+max_tier[index]+'" /></span>' + '</div>'); 
 			}
 
 			$(this).find(".stattable-equipment").css( "display", "" );
