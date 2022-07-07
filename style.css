@@ -16,7 +16,7 @@
 }
 	
 .character-stattable .stattable-controls .stattable-level,
-.character-stattable .stattable-controls .stattable-tier {
+.character-stattable .stattable-equipment .stattable-tier {
 	width: 44px;
 	font-size: 17px;
 	border: none;
@@ -80,4 +80,8 @@
 .character-stattable .stattable-equipment .equipment-item > img {
     width: 44px;
     height: auto;
+}
+
+.character-stattable td[class*="stat-"] {
+	cursor: help;
 }

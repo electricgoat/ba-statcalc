@@ -98,6 +98,7 @@ const equipment_stats_list = Object.keys(equipment_stats.hat);
 var stats = {};
 var equipment = {};
 var weapon = {};
+var affection = {};
 var tableCounter = 0;
 
 	
@@ -141,6 +142,7 @@ function initStatCalc(){
 		stats[id].crit_rate	= parseInt($(this).find(".stat-crit_rate").html()) > 0 ? parseInt($(this).find(".stat-crit_rate").html()) : null;
 		stats[id].crit_damage	= parseInt($(this).find(".stat-crit_damage").html()) > 0 ? parseInt($(this).find(".stat-crit_damage").html()) : null;
 		stats[id].stability	= parseInt($(this).find(".stat-stability").html()) > 0 ? parseInt($(this).find(".stat-stability").html()) : null;
+		stats[id].range		= parseInt($(this).find(".stat-range").html()) > 0 ? parseInt($(this).find(".stat-range").html()) : null;
 		stats[id].cc_str	= parseInt($(this).find(".stat-cc_str").html()) > 0 ? parseInt($(this).find(".stat-cc_str").html()) : null;
 		stats[id].cc_res	= parseInt($(this).find(".stat-cc_res").html()) > 0 ? parseInt($(this).find(".stat-cc_res").html()) : null;
 
@@ -256,7 +258,15 @@ function rarityChange (statTable, rarity){
 	
 	statTableRecalc(statTable);
 }
-	
+
+function affectionGet(statTable) {
+	//console.log('changing Affection bonus in table '+statTable.attr('id'));
+	if (typeof affection_data !== 'undefined') for (affectionTable in affection_data) {
+		affection.current.attack += affection_data[affectionTable].current.Attack;
+		affection.current.hp += affection_data[affectionTable].current.HP;
+		affection.current.healing += affection_data[affectionTable].current.Healing;
+	};
+}
 
 function statTableRecalc(statTable){
 	//console.log(id+' recalc called');
@@ -264,8 +274,8 @@ function statTableRecalc(statTable){
 
 
 	//Equipment
-	var equipment_bonus = { };
-	equipment_stats_list.forEach(function (element){equipment_bonus[element] = 0;});
+	equipment.bonus = { };
+	equipment_stats_list.forEach(function (element){equipment.bonus[element] = 0;});
 	
 
 	for (var index = 1; index <= 3; index++) {
@@ -276,33 +286,57 @@ function statTableRecalc(statTable){
 			//console.log ('Using equipment type ' + eq_type + ' at T' + eq_tier + ' in slot ' + index );
 
 			equipment_stats_list.forEach(function (element){
-				equipment_bonus[element] += ((typeof equipment_stats[eq_type][element] !== 'undefined' && typeof equipment_stats[eq_type][element][eq_tier] !== 'undefined')?equipment_stats[eq_type][element][eq_tier]:0);
+				equipment.bonus[element] += ((typeof equipment_stats[eq_type][element] !== 'undefined' && typeof equipment_stats[eq_type][element][eq_tier] !== 'undefined')?equipment_stats[eq_type][element][eq_tier]:0);
 			});
 
-			//console.log(equipment_bonus);
+			//console.log(equipment.bonus);
 		}
 	};
 
+
+	//Affection
+	affection.current = {};
+	equipment_stats_list.forEach(function (element){affection.current[element] = 0;});
+	affectionGet(statTable);
 
 	weapon[id].current.attack = weapon[id].rarity>0 ? calcWeaponStat( weapon_level_preset[weapon[id].rarity], weapon[id].attack_min, weapon[id].attack_max ) : 0;
 	weapon[id].current.hp = weapon[id].rarity>0 ? calcWeaponStat( weapon_level_preset[weapon[id].rarity], weapon[id].hp_min, weapon[id].hp_max ) : 0;
 	weapon[id].current.healing = weapon[id].rarity>0 ? calcWeaponStat( weapon_level_preset[weapon[id].rarity], weapon[id].healing_min, weapon[id].healing_max ) : 0;
 	
-	statTable.find(".stat-attack").html(totalStat(	stats[id].level, stats[id].rarity, 'attack', 	stats[id].attack_min, stats[id].attack_max, equipment_bonus['attack%'], equipment_bonus['attack'] + weapon[id].current.attack ));
-	statTable.find(".stat-defense").html(totalStat(	stats[id].level, stats[id].rarity, 'defense', 	stats[id].defense_min, stats[id].defense_max, equipment_bonus['defense%'], equipment_bonus['defense']));
-	statTable.find(".stat-hp").html(totalStat(		stats[id].level, stats[id].rarity, 'hp', 		stats[id].hp_min, stats[id].hp_max, equipment_bonus['hp%'], equipment_bonus['hp'] + weapon[id].current.hp ));
-	statTable.find(".stat-healing").html(totalStat(	stats[id].level, stats[id].rarity, 'healing', 	stats[id].healing_min, stats[id].healing_max, equipment_bonus['healing%'], equipment_bonus['healing'] + weapon[id].current.healing ));
+	statTable.find(".stat-attack").html(totalStat(	stats[id].level, stats[id].rarity, 'attack', 	stats[id].attack_min, stats[id].attack_max, equipment.bonus['attack%'], equipment.bonus['attack'] + weapon[id].current.attack + affection.current.attack ));
+	statTable.find(".stat-defense").html(totalStat(	stats[id].level, stats[id].rarity, 'defense', 	stats[id].defense_min, stats[id].defense_max, equipment.bonus['defense%'], equipment.bonus['defense']));
+	statTable.find(".stat-hp").html(totalStat(		stats[id].level, stats[id].rarity, 'hp', 		stats[id].hp_min, stats[id].hp_max, equipment.bonus['hp%'], equipment.bonus['hp'] + weapon[id].current.hp + affection.current.hp ));
+	statTable.find(".stat-healing").html(totalStat(	stats[id].level, stats[id].rarity, 'healing', 	stats[id].healing_min, stats[id].healing_max, equipment.bonus['healing%'], equipment.bonus['healing'] + weapon[id].current.healing + affection.current.healing ));
 
-	statTable.find(".stat-accuracy").html(addBonus( 	stats[id].accuracy,	 	0, 							equipment_bonus['accuracy'] ));
-	statTable.find(".stat-evasion").html(addBonus( 		stats[id].evasion,	 	0, 							equipment_bonus['evasion'] ));
-	statTable.find(".stat-crit_rate").html(addBonus( 	stats[id].crit_rate,	0, 							equipment_bonus['crit_rate'] ));
-	statTable.find(".stat-crit_damage").html(addBonus( 	stats[id].crit_damage,	0,		 					equipment_bonus['crit_damage'] ));
+	statTable.find(".stat-accuracy").html(addBonus( 	stats[id].accuracy,	 	0, 							equipment.bonus['accuracy'] ));
+	statTable.find(".stat-evasion").html(addBonus( 		stats[id].evasion,	 	0, 							equipment.bonus['evasion'] ));
+	statTable.find(".stat-crit_rate").html(addBonus( 	stats[id].crit_rate,	0, 							equipment.bonus['crit_rate'] ));
+	statTable.find(".stat-crit_damage").html(addBonus( 	stats[id].crit_damage,	0,		 					equipment.bonus['crit_damage'] ));
 	//statTable.find(".stat-stability").html(addBonus( 	stats[id].stability,	0, 							0 ));
-	statTable.find(".stat-cc_str").html(addBonus( 		stats[id].cc_str,	 	equipment_bonus['cc_str'], 	0 ));
-	statTable.find(".stat-cc_res").html(addBonus( 		stats[id].cc_res,	 	equipment_bonus['cc_res'], 	0 ));
+	statTable.find(".stat-cc_str").html(addBonus( 		stats[id].cc_str,	 	equipment.bonus['cc_str'], 	0 ));
+	statTable.find(".stat-cc_res").html(addBonus( 		stats[id].cc_res,	 	equipment.bonus['cc_res'], 	0 ));
 
 
+	statTable.find(".stattable-stats td").each(function () {
+		$(this).attr("title", statTooltip(id, $(this).attr('class').substring(5)));
+	})
 
+}
+
+
+function statTooltip(id, statName){
+	var tooltip = '';
+	
+	tooltip += (typeof stats[id][statName+'_min'] !== 'undefined' && stats[id][statName+'_min'] > 0) ? 'Base: ' + calcStat(stats[id].level, stats[id].rarity, statName, stats[id][statName+'_min'], stats[id][statName+'_max']) : '';
+	tooltip += (typeof stats[id][statName] !== 'undefined' && stats[id][statName] > 0) ? 'Base: ' + stats[id][statName] : '';
+
+	tooltip += (typeof equipment.bonus[statName+'%'] !== 'undefined' && equipment.bonus[statName+'%'] > 0) ? '\r\nEquipment: ' + equipment.bonus[statName+'%']+'%' 
+			+ ' ('+ (parseInt(totalStat(stats[id].level, stats[id].rarity, statName, stats[id][statName+'_min'], stats[id][statName+'_max'], equipment.bonus[statName+'%'], equipment.bonus[statName] + weapon[id].current[statName]))-parseInt(totalStat(stats[id].level, stats[id].rarity, statName, stats[id][statName+'_min'], stats[id][statName+'_max'], 0, equipment.bonus[statName] + weapon[id].current[statName])))  +')' : '';
+
+	tooltip += (typeof equipment.bonus[statName] !== 'undefined' && equipment.bonus[statName] > 0) ? '\r\nEquipment: ' + equipment.bonus[statName] : '';
+	tooltip += (typeof weapon[id].current[statName] !== 'undefined' && weapon[id].current[statName] > 0) ? '\r\nWeapon: ' + weapon[id].current[statName] : '';
+	tooltip += (typeof affection.current[statName] !== 'undefined' && affection.current[statName] > 0) ? '\r\Affection: ' + affection.current[statName] : '';
+	return tooltip;
 }
 
 
