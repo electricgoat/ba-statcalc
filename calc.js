@@ -1,7 +1,7 @@
 /* Character stat calc - start */
 const level_cap = 80;
 const max_tier = [3, 7, 7, 6]; // Max tier for Weapon, Equipment 1, 2, 3
-const fix_ingame_stats = true; // Estimate raw numbers if provided data is sourced ingame
+const fix_ingame_stats = false; // Estimate raw numbers if provided data is sourced ingame
 
 // Equipment max levels per tier
 const equipment_level_preset = {1:10, 2:20, 3:30, 4:40, 5:45, 6:50, 7:55};
@@ -106,7 +106,7 @@ $( document ).ready(function() {
 	$(".stattable-controls input").on("change mouseup keyup click", function(){levelChange($(this).closest("table"));});
 	$(".stattable-rarity-selector").children("img").on("click", function(){rarityChange($(this).closest("table"),$(this).attr('data-rarity'));})
 
-	$(".stattable-equipment input").on("change mouseup keyup click", function(){equipmentChange($(this).closest("table"));});
+	$(".stattable-equipment select").on("change", function(){equipmentChange($(this).closest("table"));});
 	$(".stattable-equipment").find("img").on("click", function(){equipmentChange($(this).closest("table"),$(this).parent().attr('data-slot'));})
 });
 	
@@ -234,8 +234,7 @@ function levelChange (statTable){
 
 function equipmentChange (statTable, toggleSlot){
 	toggleSlot = (typeof toggleSlot !== 'undefined') ? toggleSlot : false //default false, ES5 does not support function defaults
-	console.log('changing equipment in table '+statTable.attr('id'));
-
+	//console.log('changing equipment in table '+statTable.attr('id'));
 	//console.log(toggleSlot);
 	if (toggleSlot) {
 		var item_slot = statTable.find(".equipment-"+toggleSlot);
@@ -246,12 +245,12 @@ function equipmentChange (statTable, toggleSlot){
 }	
 	
 function rarityChange (statTable, rarity){
-	console.log('changing RARITY in table '+statTable.attr('id')+' to '+rarity);
+	//console.log('changing RARITY in table '+statTable.attr('id')+' to '+rarity);
 	
 	stats[statTable.attr('id')].rarity = (rarity > 5) ? 5 : rarity;
 	weapon[statTable.attr('id')].rarity = (rarity > 5) ? rarity-5 : 0;
 	
-	statTable.find(".stattable-rarity-selector").children().each(function(index){ 
+	statTable.find(".stattable-rarity-selector").children().each(function(){ 
 		($(this).attr('data-rarity') <= rarity) ? $(this).addClass('active').removeClass('inactive') : $(this).addClass('inactive').removeClass('active');
 	});
 	
@@ -273,14 +272,14 @@ function statTableRecalc(statTable){
 		if (!statTable.find(".stattable-equipment .equipment-"+index+"").hasClass("inactive"))
 		{
 			var eq_type = statTable.find(".stattable-equipment .equipment-"+index+"").attr('data-type');
-			var eq_tier = statTable.find(".stattable-equipment .equipment-"+index+" input").val();
-			console.log ('Using equipment type ' + eq_type + ' at T' + eq_tier + ' in slot ' + index );
+			var eq_tier = statTable.find(".stattable-equipment .equipment-"+index+" select").val();
+			//console.log ('Using equipment type ' + eq_type + ' at T' + eq_tier + ' in slot ' + index );
 
 			equipment_stats_list.forEach(function (element){
 				equipment_bonus[element] += ((typeof equipment_stats[eq_type][element] !== 'undefined' && typeof equipment_stats[eq_type][element][eq_tier] !== 'undefined')?equipment_stats[eq_type][element][eq_tier]:0);
 			});
 
-			console.log(equipment_bonus);
+			//console.log(equipment_bonus);
 		}
 	};
 
