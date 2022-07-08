@@ -107,8 +107,8 @@ $( document ).ready(function() {
 	$(".stattable-controls input").on("change mouseup keyup click", function(){levelChange($(this).closest("table"));statTableRecalc($(this).closest("table"));});
 	$(".stattable-rarity-selector").children("img").on("click", function(){rarityChange($(this).closest("table"),$(this).attr('data-rarity'));statTableRecalc($(this).closest("table"));})
 
-	$(".stattable-equipment select").on("change", function(){equipmentChange($(this).closest("table"));statTableRecalc($(this).closest("table"));});
-	$(".stattable-equipment").find("img").on("click", function(){equipmentChange($(this).closest("table"),$(this).parent().attr('data-slot'));statTableRecalc($(this).closest("table"));})
+	$(".stattable-equipment-selector select").on("change", function(){equipmentChange($(this).closest("table"));statTableRecalc($(this).closest("table"));});
+	$(".stattable-equipment-selector").find("img").on("click", function(){equipmentChange($(this).closest("table"),$(this).parent().attr('data-slot'));statTableRecalc($(this).closest("table"));})
 });
 	
 
@@ -192,36 +192,35 @@ function initStatCalc(){
 			}
 			
 			// Character rarity
-			raritySelector = $(this).find(".stattable-rarity-selector");
-			var character_star_html = raritySelector.html().slice(0,raritySelector.html().indexOf('>')+1);
-			var weapon_star_html = raritySelector.html().slice(raritySelector.html().indexOf('>')+1);
-			raritySelector.html(repeat(character_star_html, 5)+" "+repeat(weapon_star_html, max_tier[0]));		
+			var raritySelector = $(this).find(".stattable-rarity-selector");
+			raritySelector.html(repeat(raritySelector.html().slice(0,raritySelector.html().indexOf('>')+1), 5)+" "+repeat(raritySelector.html().slice(raritySelector.html().indexOf('>')+1), max_tier[0]));		
 			raritySelector.children().each(function(index){$(this).attr('data-rarity',index+1)});
 
-			$(this).find(".stattable-controls td").append('<span class="stattable-level-selector">Level: <input class="stattable-level" type="number" value="'+level_cap+'" step="1" min="1" max="100" /></span>'); 
-			$(this).find(".stattable-controls").css( "display", "" );	
-
+			// Level
+			$(this).find(".stattable-controls td").append('<div><span class="stattable-level-selector">Level: <input class="stattable-level" type="number" value="'+level_cap+'" step="1" min="1" max="100" /></span></div>'); 
 
 			// Equipment
 			var equipmentTable = $('.character-equipment');
-			
+			var equipmentControlsHTML = '';
 			for (var index = 1; index <= 3; index++) {
 				equipment[id][index] = {'type': equipmentTable.find(".equipment-"+index).attr('data-value'), 'image': equipmentTable.find(".equipment-"+index).find("a").html()};
 				
 				var itemTiersHTML = '';
 				for (var tier = 1; tier <= max_tier[index]; tier++){ itemTiersHTML += '<option value="'+tier+'"'+ (tier == max_tier[index]?' selected':'') +'>T'+tier+'</option>'; }
 
-				$(this).find(".stattable-equipment td").append('<div class="equipment-item equipment-'+index+'" data-type="'+equipment[id][index].type+'" data-slot="'+index+'">' + equipment[id][index].image + '<span class="stattable-equipment-tier-selector"><select class="stattable-tier">'+itemTiersHTML+'</select></span>' + '</div>'); 
+				equipmentControlsHTML += '<div class="equipment-item equipment-'+index+'" data-type="'+equipment[id][index].type+'" data-slot="'+index+'">' + equipment[id][index].image + '<span class="stattable-equipment-tier-selector"><select class="stattable-tier">'+itemTiersHTML+'</select></span>' + '</div>'; 
 
 			}
+			$(this).find(".stattable-controls td>div").append('<span class="stattable-equipment-selector">'+equipmentControlsHTML+'</span>');
+
+
+			$(this).find(".stattable-controls").css( "display", "" );	
 
 			levelChange($(this));
 			equipmentChange($(this));
 			rarityChange($(this), stats[id].rarity);
-			affectionChange($(this));
+			affectionGet($(this));
 			statTableRecalc($(this));
-
-			$(this).find(".stattable-equipment").css( "display", "" );
 
 		}
 		else
@@ -259,16 +258,15 @@ function equipmentChange (statTable, toggleSlot){
 
 
 	for (var index = 1; index <= 3; index++) {
-		if (!statTable.find(".stattable-equipment .equipment-"+index+"").hasClass("inactive"))
+		if (!statTable.find(".stattable-equipment-selector .equipment-"+index+"").hasClass("inactive"))
 		{
-			var eq_type = statTable.find(".stattable-equipment .equipment-"+index+"").attr('data-type');
-			var eq_tier = statTable.find(".stattable-equipment .equipment-"+index+" select").val();
-			//console.log ('Using equipment type ' + eq_type + ' at T' + eq_tier + ' in slot ' + index );
+			var eq_type = statTable.find(".stattable-equipment-selector .equipment-"+index+"").attr('data-type');
+			var eq_tier = statTable.find(".stattable-equipment-selector .equipment-"+index+" select").val();
+			//console.log('Using equipment type ' + eq_type + ' at T' + eq_tier + ' in slot ' + index );
 
 			equipment_stats_list.forEach(function (element){
 				equipment[statTable.attr('id')].bonus[element] += ((typeof equipment_stats[eq_type][element] !== 'undefined' && typeof equipment_stats[eq_type][element][eq_tier] !== 'undefined')?equipment_stats[eq_type][element][eq_tier]:0);
 			});
-
 			//console.log(equipment[id].bonus);
 		}
 	};
@@ -296,7 +294,7 @@ function rarityChange (statTable, rarity){
 }
 
 
-function affectionChange(statTable){
+function affectionGet(statTable){
 	//console.log('changing Affection bonus in table '+statTable.attr('id'));
 	equipment_stats_list.forEach(function (element){affection[statTable.attr('id')].bonus[element] = 0;});
 
@@ -304,10 +302,6 @@ function affectionChange(statTable){
 		Object.keys(affection_data[affectionTable].current).forEach(function (statName){
 			affection[statTable.attr('id')].bonus[statName.toLowerCase()] += affection_data[affectionTable].current[statName];
 		});
-
-		//affection[id].bonus.attack += affection_data[affectionTable].current.Attack;
-		//affection[id].bonus.hp += affection_data[affectionTable].current.HP;
-		//affection[id].bonus.healing += affection_data[affectionTable].current.Healing;
 	};
 
 	//statTableRecalc(statTable);
@@ -335,7 +329,6 @@ function statTableRecalc(statTable){
 	statTable.find(".stattable-stats td").each(function () {
 		$(this).attr("title", statTooltip(id, $(this).attr('class').substring(5)));
 	})
-
 }
 
 
@@ -344,11 +337,9 @@ function statTooltip(id, statName){
 	
 	tooltip += (typeof stats[id][statName+'_min'] !== 'undefined' && stats[id][statName+'_min'] > 0) ? 'Base: ' + calcStat(stats[id].level, stats[id].rarity, statName, stats[id][statName+'_min'], stats[id][statName+'_max']) : '';
 	tooltip += (typeof stats[id][statName] !== 'undefined' && stats[id][statName] > 0) ? 'Base: ' + stats[id][statName] : '';
-
 	tooltip += (typeof equipment[id].bonus[statName] !== 'undefined' && equipment[id].bonus[statName] > 0) ? '\r\nEquipment: ' + equipment[id].bonus[statName] : '';
 	tooltip += (typeof weapon[id].current[statName] !== 'undefined' && weapon[id].current[statName] > 0) ? '\r\nWeapon: ' + weapon[id].current[statName] : '';
 	tooltip += (typeof affection[id].bonus[statName] !== 'undefined' && affection[id].bonus[statName] > 0) ? '\r\Affection: ' + affection[id].bonus[statName] : '';
-
 	tooltip += (typeof equipment[id].bonus[statName+'%'] !== 'undefined' && equipment[id].bonus[statName+'%'] > 0) ? '\r\nEquipment: ' + equipment[id].bonus[statName+'%']+'%' 
 	+ ' ('+ (parseInt(totalStat(stats[id].level, stats[id].rarity, statName, stats[id][statName+'_min'], stats[id][statName+'_max'], equipment[id].bonus[statName+'%'], equipment[id].bonus[statName] + weapon[id].current[statName]))-parseInt(totalStat(stats[id].level, stats[id].rarity, statName, stats[id][statName+'_min'], stats[id][statName+'_max'], 0, equipment[id].bonus[statName] + weapon[id].current[statName])))  +')' : '';
 

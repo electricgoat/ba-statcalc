@@ -6,17 +6,21 @@
 }	
 	
 .character-stattable .stattable-controls {
-	min-height: 34px;
 	font-size: 15px;
+	line-height: 38px;
+}
+
+.character-stattable .stattable-controls td>div {
+	float: right;
 }
 	
-.character-stattable .stattable-controls .stattable-level-selector {
-	float: right;
+.character-stattable .stattable-controls .stattable-level-selector,
+.character-stattable .stattable-controls .stattable-equipment-selector {
 	margin: 2px 0 1px;
 }
 	
 .character-stattable .stattable-controls .stattable-level,
-.character-stattable .stattable-equipment .stattable-tier {
+.character-stattable .stattable-controls .stattable-tier {
 	width: 44px;
 	font-size: 17px;
 	border: none;
@@ -34,21 +38,24 @@
 	filter: grayscale(1);
 }
 
-.character-stattable .stattable-controls img {
-	padding: 4px 1px;
+.character-stattable .stattable-equipment-selector .inactive {
+	opacity: 0.5;
 }
+
+.character-stattable .stattable-controls img {
+	padding: 0 1px;
+	margin: -3px 0 0 0;
+	vertical-align: middle;
+}
+
 	
-.character-stattable .stattable-controls img:hover,
-.character-stattable .stattable-equipment img:hover {
+.character-stattable .stattable-controls img:hover {
 	filter: drop-shadow(0 2px 2px rgb(0 0 0 / 25%));
 	transform: translateY(-1px);
 	transition: .15s;
 	cursor: pointer;
 }
 
-.character-stattable .stattable-controls td {
-	border-bottom: 0px;
-}
 
 @media (min-width: 1200px) {
 	table.character-stattable th {
@@ -61,31 +68,17 @@
 	
 }	
 
-/*
-.character-stattable .stattable-equipment .active {
-	
-}
-*/
 
-.character-stattable .stattable-equipment .inactive {
-	filter: grayscale(1);
-	opacity: 0.5;
-}
-
-.character-stattable .stattable-equipment td {
-	border-top: 0px;
-	text-align: right;
-}
-
-.character-stattable .stattable-equipment .equipment-item {
+.character-stattable .stattable-equipment-selector .equipment-item {
     display: inline-block;
 }
 
-.character-stattable .stattable-equipment .equipment-item > img {
+.character-stattable .stattable-equipment-selector .equipment-item > img {
     width: 44px;
     height: auto;
 }
 
-.character-stattable td[class*="stat-"] {
+
+.character-stattable td[class^="stat-"] {
 	cursor: help;
 }
