@@ -122,6 +122,7 @@ function initStatCalc(){
 		var defense_data = $(this).find(".stat-defense").html().split('/');
 		var hp_data = $(this).find(".stat-hp").html().split('/');
 		var healing_data = $(this).find(".stat-healing").html().split('/');
+		var ammo_data = $(this).find(".stat-ammo").html().split('/');
 		
 				
 		stats[id] = {};
@@ -145,6 +146,10 @@ function initStatCalc(){
 		stats[id].range		= parseInt($(this).find(".stat-range").html()) > 0 ? parseInt($(this).find(".stat-range").html()) : null;
 		stats[id].cc_str	= parseInt($(this).find(".stat-cc_str").html()) > 0 ? parseInt($(this).find(".stat-cc_str").html()) : null;
 		stats[id].cc_res	= parseInt($(this).find(".stat-cc_res").html()) > 0 ? parseInt($(this).find(".stat-cc_res").html()) : null;
+		stats[id].move_speed	= parseInt($(this).find(".stat-move_speed").html()) > 0 ? parseInt($(this).find(".stat-move_speed").html()) : null;
+		stats[id].ammo_count	= parseInt(ammo_data[0]) > 0 ? parseInt(ammo_data[0]) : null;
+		stats[id].ammo_cost		= parseInt(ammo_data[1]) > 0 ? parseInt(ammo_data[1]) : null;
+		stats[id].regen_cost	= parseInt($(this).find(".stat-regen_cost").html()) > 0 ? parseInt($(this).find(".stat-regen_cost").html()) : null;
 
 
 		equipment[id] = {};
@@ -192,9 +197,10 @@ function initStatCalc(){
 			}
 			
 			// Character rarity
+			var img_regex = /<img[^>]+>/;
 			var raritySelector = $(this).find(".stattable-rarity-selector");
-			raritySelector.html(repeat(raritySelector.html().slice(0,raritySelector.html().indexOf('>')+1), 5)+" "+repeat(raritySelector.html().slice(raritySelector.html().indexOf('>')+1), max_tier[0]));		
-			raritySelector.children().each(function(index){$(this).attr('data-rarity',index+1)});
+			raritySelector.html(repeat(img_regex.exec($(".stattable-rarity-selector").find(".star-character").html())[0], 5)+" "+repeat(img_regex.exec($(".stattable-rarity-selector").find(".star-weapon").html())[0], max_tier[0]));		
+			raritySelector.find("img").each(function(index){$(this).attr('data-rarity',index+1)});
 
 			// Level
 			$(this).find(".stattable-controls td").append('<div><span class="stattable-level-selector">Level: <input class="stattable-level" type="number" value="'+level_cap+'" step="1" min="1" max="100" /></span></div>'); 
@@ -326,6 +332,11 @@ function statTableRecalc(statTable){
 	statTable.find(".stat-cc_res").html(addBonus( 		stats[id].cc_res,	 	equipment[id].bonus['cc_res'], 	0 ));
 
 
+	//secondary values
+	stats[id].damage_floor = stats[id].stability * 10000 / (stats[id].stability + 1000) + 2000;
+	stats[id].one_cost_time = 10000 / stats[id].regen_cost
+
+
 	statTable.find(".stattable-stats td").each(function () {
 		$(this).attr("title", statTooltip(id, $(this).attr('class').substring(5)));
 	})
@@ -339,9 +350,13 @@ function statTooltip(id, statName){
 	tooltip += (typeof stats[id][statName] !== 'undefined' && stats[id][statName] > 0) ? 'Base: ' + stats[id][statName] : '';
 	tooltip += (typeof equipment[id].bonus[statName] !== 'undefined' && equipment[id].bonus[statName] > 0) ? '\r\nEquipment: ' + equipment[id].bonus[statName] : '';
 	tooltip += (typeof weapon[id].current[statName] !== 'undefined' && weapon[id].current[statName] > 0) ? '\r\nWeapon: ' + weapon[id].current[statName] : '';
-	tooltip += (typeof affection[id].bonus[statName] !== 'undefined' && affection[id].bonus[statName] > 0) ? '\r\Affection: ' + affection[id].bonus[statName] : '';
+	tooltip += (typeof affection[id].bonus[statName] !== 'undefined' && affection[id].bonus[statName] > 0) ? '\r\nAffection: ' + affection[id].bonus[statName] : '';
 	tooltip += (typeof equipment[id].bonus[statName+'%'] !== 'undefined' && equipment[id].bonus[statName+'%'] > 0) ? '\r\nEquipment: ' + equipment[id].bonus[statName+'%']+'%' 
 	+ ' ('+ (parseInt(totalStat(stats[id].level, stats[id].rarity, statName, stats[id][statName+'_min'], stats[id][statName+'_max'], equipment[id].bonus[statName+'%'], equipment[id].bonus[statName] + weapon[id].current[statName]))-parseInt(totalStat(stats[id].level, stats[id].rarity, statName, stats[id][statName+'_min'], stats[id][statName+'_max'], 0, equipment[id].bonus[statName] + weapon[id].current[statName])))  +')' : '';
+
+	if (statName == 'stability') tooltip += '\r\n——————————\r\nDamage floor: ' + (stats[id].damage_floor / 100).toFixed(2) + '%';
+	if (statName == 'regen_cost') tooltip += '\r\n——————————\r\nSeconds per 1 cost: ' + (stats[id].one_cost_time).toFixed(2);
+	if (statName == 'ammo') tooltip += 'Magazine size: ' + stats[id].ammo_count + '\r\n' + ((stats[id].ammo_cost>1)?'Ammo per burst: ':'Ammo per attack: ') + stats[id].ammo_cost;
 
 	return tooltip;
 }
