@@ -101,16 +101,27 @@
 
 
 /* StatChart */
+#statchart-controls {
+	background-color: #f8f9fa;
+	border: 1px solid #a2a9b1;
+	margin: auto;
+}
+
 #statchart-controls .stattable-controls td>div {
 	float: none!important;
 }
 
 #statchart-controls .stattable-controls td {
+	padding: 0.2em 0.4em;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	flex-wrap: wrap;
 	gap:8px 20px;
+}
+
+.statchart {
+	background-color: #ecf5f9;
 }
 
 .statchart thead {
@@ -178,12 +189,14 @@
 
 .statchart th.stat {
 	width: 100px;
+	min-width: 85px;
 	box-sizing: border-box;
 }
 
 .statchart td[class^="stat-"] {
 	z-index: 1;
 	text-align: center;
+	text-shadow: 0 0 1px #ecf5f9, 0 0 2px #ecf5f9, 0 0 4px #ecf5f9;
 }
 
 

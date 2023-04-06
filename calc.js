@@ -1,10 +1,10 @@
 /* Character stat calc - start */
-const level_cap = 83;
-const max_tier = [3, 7, 7, 7, 2]; // Max tier for Weapon, Equipment 1, 2, 3, Gear
+const level_cap = 85;
+const max_tier = [3, 8, 8, 7, 2]; // Max tier for Weapon, Equipment 1, 2, 3, Gear
 const reverse_ingame_stats = true; // Estimate raw numbers if provided data is sourced ingame
 
 // Equipment max levels per tier
-const equipment_level_preset = {1:10, 2:20, 3:30, 4:40, 5:45, 6:50, 7:55};
+const equipment_level_preset = {1:10, 2:20, 3:30, 4:40, 5:45, 6:50, 7:55, 8:60};
 const weapon_level_preset = {1:30, 2:40, 3:50, 4:60, 5:70};
 
 
@@ -17,42 +17,42 @@ const rarity_bonus = {
 
 const equipment_stats = {
 'hat' : {
-	//	param		  	   N	T1		T2		T3		T4		T5		T6		T7
-		'attack%' 		: [0,	8, 		13,		18,		25,		30,		35,		40 		],
-		'crit_damage' 	: [0,	0, 		0, 		0,		800, 	1200,	1600,	1800 	],
+	//	param		  	   N	T1		T2		T3		T4		T5		T6		T7		T8
+		'attack%' 		: [0,	8, 		13,		18,		25,		30,		35,		40, 	45	],
+		'crit_damage' 	: [0,	0, 		0, 		0,		800, 	1200,	1600,	1800, 	2000],
 	},
 
 'gloves' : {
-	//	param			   N	T1		T2		T3		T4		T5		T6		T7
-		'attack%'		: [0,	6.4, 	10.4,	14.4,	20,		25,		30,		35		],
-		'crit_rate'	 	: [0,	0, 		0, 		0,		70,		200,	300,	350		],
-		'accuracy' 		: [0,	0, 		0, 		0,		0, 		0,		30,		200		],
+	//	param			   N	T1		T2		T3		T4		T5		T6		T7		T8
+		'attack%'		: [0,	6.4, 	10.4,	14.4,	20,		25,		30,		35,		40	],
+		'crit_rate'	 	: [0,	0, 		0, 		0,		70,		200,	300,	350,	370	],
+		'accuracy' 		: [0,	0, 		0, 		0,		0, 		0,		30,		200,	220	],
 	},
 
 'shoes' : {
-	//	param			   N	T1		T2		T3		T4		T5		T6		T7
-		'attack%'		: [0,	4, 		6.5,	9,		12.5,	20,		25,		30 		],
-		'hp%'			: [0,	0, 		0, 		0,		6, 		9,		12,		13.5	],
+	//	param			   N	T1		T2		T3		T4		T5		T6		T7		T8
+		'attack%'		: [0,	4, 		6.5,	9,		12.5,	20,		25,		30, 	35	],
+		'hp%'			: [0,	0, 		0, 		0,		6, 		9,		12,		13.5,	15	],
 	},
 
 'bag' : {
-	//	param			   N	T1		T2		T3		T4		T5		T6		T7
-		'hp'			: [0,	600,	975,	1350,	1875,	3500,	5500,	7500	],
-		'defense'		: [0,	0, 		0, 		0,		1000, 	1100,	1200,	1300	],
+	//	param			   N	T1		T2		T3		T4		T5		T6		T7		T8
+		'hp'			: [0,	600,	975,	1350,	1875,	3500,	5500,	7500,	9500],
+		'defense'		: [0,	0, 		0, 		0,		1000, 	1100,	1200,	1300,	1400],
 	},
 
 'badge' : {
-	//	param			   N	T1		T2		T3		T4		T5		T6		T7
-		'hp'			: [0,	800,	1300,	1800,	2500,	4500,	6500,	9500	],
-		'healing_inc'	: [0,	0, 		0, 		0,		1000, 	2000,	3000,	3200	],
-		'hp%'			: [0,	0, 		0, 		0,		0,	 	10,		18,		22		],
-		'evasion'		: [0,	0, 		0, 		0,		0,	 	0,		0,		400		],
+	//	param			   N	T1		T2		T3		T4		T5		T6		T7		T8
+		'hp'			: [0,	800,	1300,	1800,	2500,	4500,	6500,	9500,	12000],
+		'healing_inc'	: [0,	0, 		0, 		0,		1000, 	2000,	3000,	3200,	3400],
+		'hp%'			: [0,	0, 		0, 		0,		0,	 	10,		18,		22,		24	],
+		'evasion'		: [0,	0, 		0, 		0,		0,	 	0,		0,		400,	450	],
 	},
 
 'hairpin' : {
-	//	param			   N	T1		T2		T3		T4		T5		T6		T7
-		'hp'			: [0,	400,	650,	950,	1250,	3000,	4500,	6500	],
-		'cc_res%'	 	: [0,	0, 		0, 		0,		10,		20,		24,		28 		],
+	//	param			   N	T1		T2		T3		T4		T5		T6		T7		T8
+		'hp'			: [0,	400,	650,	950,	1250,	3000,	4500,	6500,	8500],
+		'cc_res%'	 	: [0,	0, 		0, 		0,		10,		20,		24,		28, 	32	],
 	},
 
 'charm' : {
@@ -731,7 +731,6 @@ function rank(stat_name) {
 		});
 		$('#'+key).find('.stat-'+stat_name).removeClass(function (index, className) {return (className.match (/(^|\s)percentile-\S+/g) || []).join(' ');}).addClass('percentile-'+percentile);
 		//console.log (percentile);
-		//console.log(value.current.attack + ' is the rank '+ rank + ' and ordinal rank' + ordinal_rank );
 	});
 }
 
