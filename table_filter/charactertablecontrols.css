@@ -1,0 +1,140 @@
+.charactertable-controls {
+    user-select: none;
+    box-sizing: border-box;
+    background-color: #f8f9fa;
+    border: 1px solid #a2a9b1;
+    padding: 0.5em 0.4em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+    line-height: normal;
+}
+
+.charactertable-controls div.controls > span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height:34px;
+    width:36px;
+    margin: 0;
+    border-radius: 2px;
+    cursor: pointer;
+    position: relative;
+}
+
+.charactertable-controls .inactive {
+    filter: grayscale(0.3);
+    opacity: 0.4;
+}
+
+.charactertable-controls .controls-school .inactive {
+    filter: grayscale(0.8);
+    opacity: 0.35;
+}
+
+
+
+
+
+.charactertable-controls div.controls-class > span {
+    width: 82px;
+    height: 26px;
+    border-width: 0 3px;
+    border-style: solid;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    background-color: #ecf5f9;
+    transform: skewX(-10deg);
+}
+
+.charactertable-controls div.controls-class > span.class-striker {
+    border-color: #f54d29;
+}
+.charactertable-controls div.controls-class > span.class-special {
+    border-color: #0785fb;
+}
+
+.charactertable-controls div.controls-class > span {
+    margin: 0 1px!important;
+}
+
+.charactertable-controls div.controls-school > span {
+    margin: 0 -2px!important;
+}
+
+.charactertable-controls div.controls-attack > span,
+.charactertable-controls div.controls-armor > span {
+    border: 1px solid #2d4c72;
+}
+
+.charactertable-controls div.controls-pool > span {
+    width: 82px;
+    height: 26px;
+    border-width: 0 3px;
+    border-style: solid;
+    border-radius: 8px;
+    border-color: #112134;
+    font-size: 16px;
+    font-weight: bold;
+    /* text-transform: uppercase; */
+    background-color: #ecf5f9;
+    transform: skewX(-10deg);
+}
+
+.charactertable-controls div.controls-pool {
+    flex-grow: 1;
+    text-align: right;
+}
+
+@media (max-width: 1200px) {
+    .charactertable-controls div.controls-school,
+    .charactertable-controls div.controls-pool {
+        flex-grow: 1;
+        text-align: center;
+    }
+}
+
+/* .charactertable-controls div.controls-attack,
+.charactertable-controls div.controls-armor {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid;
+    border-radius: inherit;
+}
+
+
+.charactertable-controls div.controls-attack span.attack-explosive:before {
+    border: var(--explosive);
+}
+.charactertable-controls div.controls-attack span.attack-penetration:before {
+    border: var(--penetration);
+}
+.charactertable-controls div.controls-attack span.attack-mystic:before {
+    border: var(--mystic);
+}
+.charactertable-controls div.controls-attack span.attack-sonic:before {
+    border: var(--sonic);
+}
+
+
+.charactertable-controls div.controls-armor span.armor-light:before {
+    border: var(--light);
+}
+.charactertable-controls div.controls-armor span.armor-heavy:before {
+    border: var(--heavy);
+}
+.charactertable-controls div.controls-armor span.armor-special:before {
+    border: var(--special);
+}
+.charactertable-controls div.controls-armor span.armor-elastic:before {
+    border: var(--elastic);
+} */
