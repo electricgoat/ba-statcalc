@@ -23,7 +23,7 @@ function initAffectionTable(){
 		//console.log('Initializing affection table '+id)
 		var data = {};
 
-		$(this).find("div").each(function(){
+		$(this).find(".affection-data > div").each(function(){
 			var level = $(this).attr('data-level');
 			data[level] = {};
 			var bonus = $(this).attr('data-stats').split(' ');

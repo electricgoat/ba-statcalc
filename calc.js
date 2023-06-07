@@ -1,6 +1,6 @@
 /* Character stat calc - start */
 const level_cap = 85;
-const max_tier = [3, 8, 8, 7, 2]; // Max tier for Weapon, Equipment 1, 2, 3, Gear
+const max_tier = [3, 8, 8, 8, 2]; // Max tier for Weapon, Equipment 1, 2, 3, Gear
 const reverse_ingame_stats = true; // Estimate raw numbers if provided data is sourced ingame
 
 // Equipment max levels per tier
@@ -56,24 +56,24 @@ const equipment_stats = {
 	},
 
 'charm' : {
-	//	param			   N	T1		T2		T3		T4		T5		T6		T7
-		'crit_res'		: [0,	80, 	130,	180,	250,	280,	320,	360		],
-		'critdamage_res': [0,	0, 		0, 		0,		1000,	1500,	1800,	2100	],
-		'crit_rate'		: [0,	0, 		0, 		0,		0,		120,	150,	180		],
+	//	param			   N	T1		T2		T3		T4		T5		T6		T7		T8
+		'crit_res'		: [0,	80, 	130,	180,	250,	280,	320,	360,	380		],
+		'critdamage_res': [0,	0, 		0, 		0,		1000,	1500,	1800,	2100,	2400	],
+		'crit_rate'		: [0,	0, 		0, 		0,		0,		120,	150,	180,	200		],
 	},
 
 'watch' : {
-	//	param			   N	T1		T2		T3		T4		T5		T6		T7
-		'crit_rate'		: [0,	80, 	130,	180,	250,	280,	320,	360		],
-		'crit_damage' 	: [0,	0, 		0, 		0,		1000,	1500,	1800,	2100	],
-		'hp%' 			: [0,	0, 		0, 		0,		0,		5,		7,		9		],
+	//	param			   N	T1		T2		T3		T4		T5		T6		T7		T8
+		'crit_rate'		: [0,	80, 	130,	180,	250,	280,	320,	360,	400		],
+		'crit_damage' 	: [0,	0, 		0, 		0,		1000,	1500,	1800,	2100,	2400	],
+		'hp%' 			: [0,	0, 		0, 		0,		0,		5,		7,		9,		11		],
 	},
 
 'necklace' : {
-	//	param			   N	T1		T2		T3		T4		T5		T6		T7
-		'healing%' 		: [0,	8, 		13, 	18,		25, 	28,		32,		35		],
-		'cc_str%' 		: [0,	8, 		13, 	18,		25, 	28,		32,		35		],
-		'attack%' 		: [0,	0, 		0, 		0,		0,		4,		6,		8		],
+	//	param			   N	T1		T2		T3		T4		T5		T6		T7		T8
+		'healing%' 		: [0,	8, 		13, 	18,		25, 	28,		32,		35,		38		],
+		'cc_str%' 		: [0,	8, 		13, 	18,		25, 	28,		32,		35,		38		],
+		'attack%' 		: [0,	0, 		0, 		0,		0,		4,		6,		8,		10		],
 	},
 
 };
