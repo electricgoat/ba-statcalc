@@ -17,9 +17,9 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height:34px;
-    width:36px;
-    margin: 0;
+    height:32px;
+    width:34px;
+    margin: 0 1px;
     border-radius: 2px;
     cursor: pointer;
     position: relative;
@@ -89,6 +89,10 @@
 .charactertable-controls div.controls-pool {
     flex-grow: 1;
     text-align: right;
+}
+
+.charactertable-controls div.controls-school span.school-abydos > img {
+    object-position: 0 3px;
 }
 
 @media (max-width: 1200px) {
