@@ -215,7 +215,7 @@ function initStatChart(){
 function initStatCalc(){
 	$(".character-stattable").each(function(){
 		var id = 'statTable-'+(++tableCounter);
-		if ($(this).attr('data-character_id') !== undefined) id = $(this).attr('data-character_id');
+		if ($(this).attr('data-character_id') !== undefined) id = String($(this).attr('data-character_id'));
 		$(this).attr('id',id);
 		//console.log('StatCalc - init table id ' + id);
 
@@ -351,6 +351,7 @@ function initStats(scope, statTable, id){
 	statCalc[id].affection.bonus = {};
 	statCalc[id].affection.main_id = [];
 	statCalc[id].affection.alt_id = [];
+	statCalc[id].affection.alt_level = [];
 
 	statCalc[id].current = {};
 
@@ -531,16 +532,23 @@ function affectionAltLink(id) {
 			if (id !== element && name_normalized == statCalc[element].character_name.replace(regex_name_strip, regex_name_subst)) {
 				//console.log('id:'+id+'alt_id:'+ element+'checking:'+statCalc[id].character_name+';matched:'+statCalc[element].character_name);
 				statCalc[id].affection.alt_id.push(element);
+				statCalc[id].affection.alt_level.push(affection_start);
 			}
 		});
 	}
 
-	if (statCalc[id].affection.alt_id.length == 0 && typeof affection_data[2] !== 'undefined') {
+	if (typeof statCalc[id].character_name == 'undefined' && typeof affection_data[2] !== 'undefined') {
 		//console.log('Using default alt affection table id 2');
-		statCalc[id].affection.alt_id.push(2);
+		Object.keys(affection_data).forEach(function (element){
+			if (element > 1) {
+				//console.log('linking affection table ' + element)
+				statCalc[id].affection.alt_id.push(element);
+				statCalc[id].affection.alt_level.push(affection_start);
+			}
+		});
 	}
 
-	statCalc[id].affection.alt_level = affection_start;
+	//statCalc[id].affection.alt_level = affection_start;
 }
 
 
@@ -562,8 +570,9 @@ function affectionRecalc(){
 		}
 
 		for (affectionTable of statCalc[id].affection.alt_id) if (typeof affection_data[affectionTable] !== 'undefined') {
-			bonus = affectionGetBonus(affectionTable, statCalc[id].affection.alt_level);
-
+			//console.log('Adding affection bonus to '+ id +' from ' + affectionTable + '; this is alt no ' + statCalc[id].affection.alt_id.indexOf(String(affectionTable)));
+			bonus = affectionGetBonus(affectionTable, statCalc[id].affection.alt_level[statCalc[id].affection.alt_id.indexOf(String(affectionTable))]);
+			//console.log(bonus);
 			Object.keys(bonus).forEach(function (statName){
 				statCalc[id].affection.bonus[statName.toLowerCase()] += bonus[statName];
 			});
@@ -747,9 +756,22 @@ function affectionChartUpdate (element){
 	if (level < 1) 	 			{ input.val(1);	level = 1; }
 	if (level > affection_cap) 	{ input.val(affection_cap); level = affection_cap; }
 
-	Object.keys(statCalc).forEach(function (id){
-		statCalc[id].affection[type+'_level'] = level;
-	});
+	// Object.keys(statCalc).forEach(function (id){
+	// 	statCalc[id].affection[type+'_level'] = level;
+	// });
+
+	if (type == 'main') {
+		Object.keys(statCalc).forEach(function (id){
+			statCalc[id].affection.main_level = level;
+		});
+	}
+	else {
+		Object.keys(statCalc).forEach(function (id){
+			for (let i = 0; i < statCalc[id].affection.alt_level.length; i++) {
+				statCalc[id].affection.alt_level[i] = level;
+			}
+		});
+	}
 }
 
 
@@ -761,16 +783,44 @@ function affectionChartToggle (element){
 	(element.hasClass("inactive")) ? element.addClass('active').removeClass('inactive') : element.addClass('inactive').removeClass('active');
 	
 	if (element.hasClass("inactive")) {
-		Object.keys(statCalc).forEach(function (id){
-			statCalc[id].affection[type+'_level'] = 1;
-		});
+		// Object.keys(statCalc).forEach(function (id){
+		// 	statCalc[id].affection[type+'_level'] = 1;
+		// });
+
+		if (type == 'main') {
+			Object.keys(statCalc).forEach(function (id){
+				statCalc[id].affection.main_level = 1;
+			});
+		}
+		else {
+			Object.keys(statCalc).forEach(function (id){
+				for (let i = 0; i < statCalc[id].affection.alt_level.length; i++) {
+					statCalc[id].affection.alt_level[i] = 1;
+				}
+			});
+		}
 	}
 	else {
 		level = $(".stattable-controls .affection-"+type+" input").val();
-		Object.keys(statCalc).forEach(function (id){
-			statCalc[id].affection[type+'_level'] = level;
-		});
+		// Object.keys(statCalc).forEach(function (id){
+		// 	statCalc[id].affection[type+'_level'] = level;
+		// });
+
+		if (type == 'main') {
+			Object.keys(statCalc).forEach(function (id){
+				statCalc[id].affection.main_level = level;
+			});
+		}
+		else {
+			Object.keys(statCalc).forEach(function (id){
+				for (let i = 0; i < statCalc[id].affection.alt_level.length; i++) {
+					statCalc[id].affection.alt_level[i] = level;
+				}
+			});
+		}
 	}
+
+	
 }
 
 

@@ -78,10 +78,17 @@ function affectionChange (affectionTable, level, call_statCalc){
 
 		var type = 'main';
 		if (affectionTable.attr('data-character_id') > 1) type = 'alt';
-	
-		Object.keys(statCalc).forEach(function (id){
-			statCalc[id].affection[type+'_level'] = level;
-		});
+		
+		if (type == 'main') {
+			Object.keys(statCalc).forEach(function (id){
+				statCalc[id].affection['main_level'] = level;
+			});
+		}
+		else {
+			Object.keys(statCalc).forEach(function (id){
+				statCalc[id].affection.alt_level[statCalc[id].affection.alt_id.indexOf(affectionTable.attr('data-character_id'))] = level;
+			});
+		}
 
 		affectionRecalc();
 		statTablesRecalc();
@@ -91,6 +98,8 @@ function affectionChange (affectionTable, level, call_statCalc){
 
 function affectionGetBonus (id, level) {
 	var effective_bonus = {};
+
+	//console.log('getting affection bonus from table '+id +' at level '+level);
 
 	for (var index = 2; index <= level; index++) {
 		$.each( affection_data[id][index], function(stat_name, stat_value){
