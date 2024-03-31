@@ -36,10 +36,10 @@ const equipment_stats = {
 	},
 
 'bag' : {
-	//	param			   N	T1		T2		T3		T4		T5		T6		T7		T8
+	//	param			   N	T1		T2		T3		T4		T5		T6		T7		T8		T9
 		'hp'			: [0,	600,	975,	1350,	1875,	3500,	5500,	7500,	9500,	12000],
 		'defense'		: [0,	0, 		0, 		0,		1000, 	1100,	1200,	1300,	1400, 	1600],
-		'defense'		: [0,	0, 		0, 		0,		0, 		0,		0,		0,		0,	 	5],
+		'hp%'			: [0,	0, 		0, 		0,		0, 		0,		0,		0,		0,	 	5],
 	},
 
 'badge' : {
@@ -353,6 +353,10 @@ function initStats(scope, statTable, id){
 	statCalc[id].affection.alt_id = [];
 	statCalc[id].affection.alt_level = [];
 
+	statCalc[id].potential = {};
+	statCalc[id].potential.level = {};
+	statCalc[id].potential.bonus = {};
+
 	statCalc[id].current = {};
 
 }	
@@ -594,8 +598,9 @@ function statTableRecalc(statTable){
 													statCalc[id].stats[statName+'_min'], 
 													statCalc[id].stats[statName+'_max'], 
 													statCalc[id].equipment.bonus[statName+'%'], 
-													statCalc[id].equipment.bonus[statName] + statCalc[id].weapon.bonus[statName] + statCalc[id].affection.bonus[statName] + statCalc[id].gear.bonus[statName] );
-		statTable.find(".stat-"+statName).html(statCalc[id].current[statName]);
+													statCalc[id].equipment.bonus[statName] + statCalc[id].weapon.bonus[statName] + statCalc[id].affection.bonus[statName] + statCalc[id].gear.bonus[statName] + statCalc[id].potential.bonus[statName],
+												);
+		statTable.find(".stat-"+statName).html(statCalc[id].current[statName] );
 	});
 
 	/*
@@ -629,6 +634,18 @@ function statTableRecalc(statTable){
 }
 
 
+function potentialLink(id) {
+	if (typeof potential_data['potentialtable-1'] !== 'undefined') { 
+		//console.log('Using default main affection table id 1');
+		statCalc[id].potential.id.push(1);
+	}
+
+	statCalc[id].potential.level['attack'] = potential_start;
+	statCalc[id].potential.level['hp'] = potential_start;
+	statCalc[id].potential.level['healing'] = potential_start;
+}
+
+
 function statTooltip(id, statName){
 	var tooltip = '';
 	
@@ -638,6 +655,7 @@ function statTooltip(id, statName){
 	tooltip += (typeof statCalc[id].gear.bonus[statName] !== 'undefined' && statCalc[id].gear.bonus[statName] > 0) ? '\r\nGear: ' + statCalc[id].gear.bonus[statName] : '';
 	tooltip += (typeof statCalc[id].weapon.bonus[statName] !== 'undefined' && statCalc[id].weapon.bonus[statName] > 0) ? '\r\nWeapon: ' + statCalc[id].weapon.bonus[statName] : '';
 	tooltip += (typeof statCalc[id].affection.bonus[statName] !== 'undefined' && statCalc[id].affection.bonus[statName] > 0) ? '\r\nAffection: ' + statCalc[id].affection.bonus[statName] : '';
+	tooltip += (typeof statCalc[id].potential.bonus[statName] !== 'undefined' && statCalc[id].potential.bonus[statName] > 0) ? '\r\Potential: ' + statCalc[id].potential.bonus[statName] : '';
 
 	if (stats_list.indexOf(statName) < 4)
 		tooltip += (statCalc[id].equipment.bonus[statName+'%'] > 0) ? '\r\nEquipment: ' + statCalc[id].equipment.bonus[statName+'%']+'%'
