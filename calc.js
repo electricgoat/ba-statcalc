@@ -43,7 +43,7 @@ const equipment_stats = {
 	},
 
 'badge' : {
-	//	param			   N	T1		T2		T3		T4		T5		T6		T7		T8
+	//	param			   N	T1		T2		T3		T4		T5		T6		T7		T8		T9
 		'hp'			: [0,	800,	1300,	1800,	2500,	4500,	6500,	9500,	12000,	14000],
 		'healing_inc'	: [0,	0, 		0, 		0,		1000, 	2000,	3000,	3200,	3400,	3500],
 		'hp%'			: [0,	0, 		0, 		0,		0,	 	10,		18,		22,		24,		25	],
@@ -51,7 +51,7 @@ const equipment_stats = {
 	},
 
 'hairpin' : {
-	//	param			   N	T1		T2		T3		T4		T5		T6		T7		T8
+	//	param			   N	T1		T2		T3		T4		T5		T6		T7		T8		T9
 		'hp'			: [0,	400,	650,	950,	1250,	3000,	4500,	6500,	8500,	11000],
 		'cc_res%'	 	: [0,	0, 		0, 		0,		10,		20,		24,		28, 	32,		34	],
 		'crit_rate'	 	: [0,	0, 		0, 		0,		0,		0,		0,		0,		0,		150	],
@@ -82,10 +82,25 @@ const equipment_stats = {
 
 // StatChart controls
 const statchart_equipment_preset = {
-	1:{type:'hat',title:'Equipment 1',image:'<img alt="Equipment 1.png" src="https://static.miraheze.org/bluearchivewiki/thumb/f/fd/Equipment_Icon_Hat_Tier1.png/44px-Equipment_Icon_Hat_Tier1.png" decoding="async" width="44" height="35" srcset="//static.miraheze.org/bluearchivewiki/thumb/f/fd/Equipment_Icon_Hat_Tier1.png/66px-Equipment_Icon_Hat_Tier1.png 1.5x, //static.miraheze.org/bluearchivewiki/thumb/f/fd/Equipment_Icon_Hat_Tier1.png/88px-Equipment_Icon_Hat_Tier1.png 2x">'},
-	2:{type:'bag',title:'Equipment 2',image:'<img alt="Equipment 2" src="https://static.miraheze.org/bluearchivewiki/thumb/1/1a/Equipment_Icon_Bag_Tier1.png/44px-Equipment_Icon_Bag_Tier1.png" decoding="async" width="44" height="35" srcset="//static.miraheze.org/bluearchivewiki/thumb/1/1a/Equipment_Icon_Bag_Tier1.png/66px-Equipment_Icon_Bag_Tier1.png 1.5x, //static.miraheze.org/bluearchivewiki/thumb/1/1a/Equipment_Icon_Bag_Tier1.png/88px-Equipment_Icon_Bag_Tier1.png 2x">'},
-	3:{type:'watch',title:'Equipment 3',image:'<img alt="Equipment 3" src="https://static.miraheze.org/bluearchivewiki/thumb/c/c5/Equipment_Icon_Watch_Tier1.png/44px-Equipment_Icon_Watch_Tier1.png" decoding="async" width="44" height="35" srcset="//static.miraheze.org/bluearchivewiki/thumb/c/c5/Equipment_Icon_Watch_Tier1.png/66px-Equipment_Icon_Watch_Tier1.png 1.5x, //static.miraheze.org/bluearchivewiki/thumb/c/c5/Equipment_Icon_Watch_Tier1.png/88px-Equipment_Icon_Watch_Tier1.png 2x">'},
-	4:{type:'gear',title:'Unique gear',image:'<img alt="Unique gear" src="https://static.miraheze.org/bluearchivewiki/thumb/d/db/Gear_Icon_10000.png/44px-Gear_Icon_10000.png" decoding="async" width="44" height="35" srcset="//static.miraheze.org/bluearchivewiki/thumb/d/db/Gear_Icon_10000.png/66px-Gear_Icon_10000.png 1.5x, //static.miraheze.org/bluearchivewiki/thumb/d/db/Gear_Icon_10000.png/88px-Gear_Icon_10000.png 2x">'}
+    1: {"type": "hat", "image": false, "title": false},
+    2: {"type": "bag", "image": false, "title": false},
+	3: {"type": "watch", "image": false, "title": false},
+    4: {"type": "gear", "image": "https://static.miraheze.org/bluearchivewiki/d/db/Gear_Icon_10000.png", "title": "Unique gear"},
+}
+
+/* WikiMedia file storage uses first two characters of an md5 filename hash */
+/* Prehashed here as t1~t10 table is smaller than code for runtime calculation */
+/* see https://www.mediawiki.org/wiki/Manual:$wgHashedUploadDirectory */
+const equipment_icon_hashes = {
+    "hat": 		["fd", "76", "49", "f0", "b0", "2d", "0f", "8a", "01", "8a"],
+    "gloves": 	["c4", "1f", "45", "f3", "7b", "fb", "7f", "b3", "27", "2f"],
+    "shoes": 	["3f", "fd", "1b", "d2", "67", "37", "d4", "99", "cf", "e1"],
+    "bag": 		["1a", "7c", "95", "40", "3f", "4d", "ae", "6d", "21", "19"],
+    "badge": 	["a8", "93", "a5", "1a", "15", "b3", "d6", "b5", "6b", "2e"],
+    "hairpin": 	["1b", "73", "4d", "6f", "84", "72", "bf", "e9", "52", "b3"],
+    "charm": 	["d4", "99", "1b", "5b", "af", "0e", "42", "94", "a2", "f1"],
+    "watch": 	["c5", "e3", "33", "15", "c3", "61", "67", "da", "5f", "a6"],
+    "necklace": ["f4", "3a", "66", "ae", "58", "ce", "26", "24", "05", "ea"]
 };
 
 const stats_list = [
@@ -128,7 +143,7 @@ $( document ).ready(function() {
 	$(".stattable-controls .stattable-level-selector input").on("change mouseup keyup click", function(){updateLevel($(this).val());statTablesRecalc();});
 	
 	//$(".stattable-rarity-selector").children("img").on("click", function(){rarityChange($(this).closest("table"),$(this).attr('data-rarity'));statTableRecalc($(this).closest("table"));})
-	$(".stattable-rarity-selector").children("img").on("click", function(){updateRarity($(this).attr('data-rarity'));statTablesRecalc();});
+	$(".stattable-rarity-selector").children("span.control").on("click", function(){updateRarity($(this).attr('data-rarity'));statTablesRecalc();});
 
 	//$(".stattable-equipment-selector select").on("change", function(){equipmentChange($(this).closest("table"));statTableRecalc($(this).closest("table"));});
 	$(".stattable-equipment-selector select").on("change", function(){updateEquipment();statTablesRecalc();});
@@ -152,22 +167,51 @@ function initStatChart(){
 		var img_regex = /<img[^>]+>/;
 		var raritySelector = controlsTable.find(".stattable-rarity-selector");
 		raritySelector.html(repeat(img_regex.exec($(".stattable-rarity-selector").find(".star-character").html())[0], 5)+" "+repeat(img_regex.exec($(".stattable-rarity-selector").find(".star-weapon").html())[0], max_tier[0]));		
-		raritySelector.find("img").each(function(index){$(this).attr('data-rarity',index+1);});
+		raritySelector.children("img").addClass('mw-no-invert').wrap( '<span class="control"></span>' )
+		raritySelector.children("span.control").each(function(index){$(this).attr('data-rarity',index+1);});
 
 		// Level
 		controlsTable.find(".equipment-controls").append('<span class="stattable-level-selector">Level: <input class="stattable-level" type="number" value="'+level_cap+'" step="1" min="1" max="100" /></span>');
 
 		// Equipment
 		var equipmentControlsHTML = '';
+
 		for (var index = 1; index <= 4; index++) {
-					
+			var filename = '';
+			var hash = '';
 			var itemTiersHTML = '';
-			for (var tier = 1; tier <= max_tier[index]; tier++){ itemTiersHTML += '<option value="'+tier+'"'+ (tier == max_tier[index]?' selected':'') +'>T'+tier+'</option>'; }
+			for (var tier = 1; tier <= max_tier[index]; tier++){ 
+				if (index <= 3){
+					filename = `Equipment_Icon_${statchart_equipment_preset[index].type.charAt(0).toUpperCase() + statchart_equipment_preset[index].type.slice(1)}_Tier${tier}.png`;
+					hash = equipment_icon_hashes[statchart_equipment_preset[index].type][tier-1];
 
-			equipmentControlsHTML += '<div class="equipment-item equipment-'+index+'" data-type="'+statchart_equipment_preset[index].type+'" data-slot="'+index+'" '+ ((statchart_equipment_preset[index].title !== undefined)?'title="'+statchart_equipment_preset[index].title+'"':'') +'>' + statchart_equipment_preset[index].image + '<span class="stattable-equipment-tier-selector"><select class="stattable-tier">'+itemTiersHTML+'</select></span>' + '</div>'; 
+					//Preload equipment icons so they'd flip instantly upon switch
+					if (tier !== max_tier[index]) {
+						const link = $('<link>', {
+							rel: 'preload',
+							as: 'image',
+							href: wiki_imagesrc(filename, hash, 44),
+							imagesrcset: wiki_srcset(filename, hash, 44)
+						});
+						$('head').append(link);
+					}
+				}
+				else {
+					var imgsrc = statchart_equipment_preset[index].image.split('/');
+					filename = imgsrc.pop();
+					hash = imgsrc.pop();
+				}
 
+				itemTiersHTML += `<option value="${tier}" ${(tier == max_tier[index]?' selected':'')} data-icon-filename="${filename}" data-icon-hash="${hash}">T${tier}</option>`; 
+			}
+			
+
+			const imageHTML = `<img alt="${statchart_equipment_preset[index].type.charAt(0).toUpperCase() + statchart_equipment_preset[index].type.slice(1)}" src="${wiki_imagesrc(filename, hash, 44)}" decoding="async" class="mw-no-invert" srcset="${wiki_srcset(filename, hash, 44)}">`;
+			equipmentControlsHTML += '<div class="equipment-item equipment-'+index+'" data-type="'+statchart_equipment_preset[index].type+'" data-slot="'+index+'" '+ ((statchart_equipment_preset[index].title)?'title="'+statchart_equipment_preset[index].title+'"':statchart_equipment_preset[index].type.charAt(0).toUpperCase() + statchart_equipment_preset[index].type.slice(1)) +'>' + imageHTML + '<span class="stattable-equipment-tier-selector"><select class="stattable-tier">'+itemTiersHTML+'</select></span>' + '</div>'; 
 		}
+
 		controlsTable.find(".equipment-controls").append('<span class="stattable-equipment-selector">'+equipmentControlsHTML+'</span>');
+
 
 		// Affection
 		controlsTable.find(".affection-controls > .affection").append('<input type="number" value="50" step="1" min="1" max="50">');
@@ -230,8 +274,9 @@ function initStatCalc(){
 			// Character rarity
 			var img_regex = /<img[^>]+>/;
 			var raritySelector = $(this).find(".stattable-rarity-selector");
-			raritySelector.html(repeat(img_regex.exec($(".stattable-rarity-selector").find(".star-character").html())[0], 5)+" "+repeat(img_regex.exec($(".stattable-rarity-selector").find(".star-weapon").html())[0], max_tier[0]));		
-			raritySelector.find("img").each(function(index){$(this).attr('data-rarity',index+1);});
+			raritySelector.html(repeat(img_regex.exec($(".stattable-rarity-selector").find(".star-character").html())[0], 5)+" "+repeat(img_regex.exec($(".stattable-rarity-selector").find(".star-weapon").html())[0], max_tier[0]));
+			raritySelector.children("img").addClass('mw-no-invert').wrap( '<span class="control"></span>' )
+			raritySelector.children("span.control").each(function(index){$(this).attr('data-rarity',index+1);});
 
 			// Level
 			$(this).find(".stattable-controls td").append('<div><span class="stattable-level-selector">Level: <input class="stattable-level" type="number" value="'+level_cap+'" step="1" min="1" max="100" /></span></div>'); 
@@ -239,19 +284,45 @@ function initStatCalc(){
 			// Equipment
 			var equipmentTable = $('.character-equipment');
 			var equipmentControlsHTML = '';
+
 			for (var index = 1; index <= ((typeof statCalc[id].gear.table_id !== 'undefined')?4:3); index++) {
-				if (index <= 3) statCalc[id].equipment[index] = {'type': equipmentTable.find(".equipment-"+index).attr('data-value'), 'image': equipmentTable.find(".equipment-"+index).find("a").html()};
-				else statCalc[id].equipment[index] = {'type': 'gear', 'image': $(document).find(".geartable-summary").find("a").html(), 'title': "Unique gear"};
+				statCalc[id].equipment[index] = (index <= 3)?{'type': equipmentTable.find(".equipment-"+index).attr('data-value'), 'image': false, 'title': false}:{'type': 'gear', 'image': $(document).find(".geartable-summary").find("a img").attr('src'), 'title': "Unique gear"};
 				
+				var filename = '';
+				var hash = '';
 				var itemTiersHTML = '';
-				for (var tier = 1; tier <= max_tier[index]; tier++){ itemTiersHTML += '<option value="'+tier+'"'+ (tier == max_tier[index]?' selected':'') +'>T'+tier+'</option>'; }
+				for (var tier = 1; tier <= max_tier[index]; tier++){ 
+					if (index <= 3){
+						filename = `Equipment_Icon_${statCalc[id].equipment[index].type.charAt(0).toUpperCase() + statCalc[id].equipment[index].type.slice(1)}_Tier${tier}.png`;
+						hash = equipment_icon_hashes[statCalc[id].equipment[index].type][tier-1];
 
-				equipmentControlsHTML += '<div class="equipment-item equipment-'+index+'" data-type="'+statCalc[id].equipment[index].type+'" data-slot="'+index+'" '+ ((statCalc[id].equipment[index].title !== undefined)?'title="'+statCalc[id].equipment[index].title+'"':'') +'>' + statCalc[id].equipment[index].image + '<span class="stattable-equipment-tier-selector"><select class="stattable-tier">'+itemTiersHTML+'</select></span>' + '</div>'; 
+						//Preload equipment icons so they'd flip instantly upon switch
+						if (tier !== max_tier[index]) {
+							const link = $('<link>', {
+								rel: 'preload',
+								as: 'image',
+								href: wiki_imagesrc(filename, hash, 44),
+								imagesrcset: wiki_srcset(filename, hash, 44)
+							});
+							 $('head').append(link);
+						}
 
+					}
+					else {
+						var imgsrc = statCalc[id].equipment[index].image.split('/');
+						filename = imgsrc.pop();
+						hash = imgsrc.pop();
+					}
+
+					itemTiersHTML += `<option value="${tier}" ${(tier == max_tier[index]?' selected':'')} data-icon-filename="${filename}" data-icon-hash="${hash}">T${tier}</option>`; 
+				}
+				
+
+				const imageHTML = `<img alt="${statCalc[id].equipment[index].type.charAt(0).toUpperCase() + statCalc[id].equipment[index].type.slice(1)}" src="${wiki_imagesrc(filename, hash, 44)}" decoding="async" class="mw-no-invert" srcset="${wiki_srcset(filename, hash, 44)}">`;
+				equipmentControlsHTML += '<div class="equipment-item equipment-'+index+'" data-type="'+statCalc[id].equipment[index].type+'" data-slot="'+index+'" '+ ((statCalc[id].equipment[index].title)?'title="'+statCalc[id].equipment[index].title+'"':statCalc[id].equipment[index].type.charAt(0).toUpperCase() + statCalc[id].equipment[index].type.slice(1)) +'>' + imageHTML + '<span class="stattable-equipment-tier-selector"><select class="stattable-tier">'+itemTiersHTML+'</select></span>' + '</div>'; 
 			}
 
 			$(this).find(".stattable-controls td>div").append('<span class="stattable-equipment-selector">'+equipmentControlsHTML+'</span>');
-
 
 			$(this).find(".stattable-controls").css( "display", "" );	
 
@@ -457,10 +528,11 @@ function equipmentChange (statTable, toggleSlot){
 
 
 	for (var index = 1; index <= 3; index++) {
-		if (!$(document).find(".stattable-equipment-selector .equipment-"+index+"").hasClass("inactive"))
+		const control = $(document).find(".stattable-equipment-selector .equipment-"+index+"");
+		if (!control.hasClass("inactive"))
 		{
 			var eq_type = statCalc[id].equipment[index].type;
-			var eq_tier = $(document).find(".stattable-equipment-selector .equipment-"+index+" select").val();
+			var eq_tier = control.find("select").val();
 			//console.log('Using equipment type ' + eq_type + ' at T' + eq_tier + ' in slot ' + index );
 
 			stats_list.forEach(function (element){
@@ -468,6 +540,10 @@ function equipmentChange (statTable, toggleSlot){
 				statCalc[id].equipment.bonus[element+'%'] += ((typeof equipment_stats[eq_type][element+'%'] !== 'undefined' && typeof equipment_stats[eq_type][element+'%'][eq_tier] !== 'undefined')?equipment_stats[eq_type][element+'%'][eq_tier]:0);
 			});
 		}
+		
+		const option = control.find("select > option:selected");
+		//console.log(`Switching slot ${index} icon to ${option.data('icon-filename')}, hash ${option.data('icon-hash')}`);
+		if (control.children('img').attr('src') !== wiki_imagesrc(option.data('icon-filename'), option.data('icon-hash'), 44)) control.children('img').attr('src', wiki_imagesrc(option.data('icon-filename'), option.data('icon-hash'), 44)).attr('srcset', wiki_srcset(option.data('icon-filename'), option.data('icon-hash'), 44));
 	}
 
 	if (!$(document).find(".stattable-equipment-selector .equipment-4").hasClass("inactive"))
@@ -718,6 +794,17 @@ function hasNull(target) {
 
 function repeat(string, count) {
     return new Array(count + 1).join(string);
+}
+
+
+function wiki_imagesrc(filename, hash, size) {
+	size = (typeof size !== 'undefined') ? size : 44; //default, ES5 does not support function defaults
+	return `https://static.miraheze.org/bluearchivewiki/thumb/${String(hash).charAt(0)}/${hash}/${filename}/${size}px-${filename}`;
+}
+
+function wiki_srcset(filename, hash, size) {
+	size = (typeof size !== 'undefined') ? size : 44; //default, ES5 does not support function defaults
+	return `//static.miraheze.org/bluearchivewiki/thumb/${String(hash).charAt(0)}/${hash}/${filename}/${Math.ceil(size*1.5)}px-${filename} 1.5x, //static.miraheze.org/bluearchivewiki/thumb/${String(hash).charAt(0)}/${hash}/${filename}/${size*2}px-${filename} 2x`;
 }
 /* Character stat calc - end */	
 
