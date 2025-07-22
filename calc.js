@@ -1,6 +1,6 @@
 /* Character stat calc - start */
 const level_cap = 90;
-const max_tier = [3, 10, 10, 9, 2]; // Max tier for Weapon, Equipment 1, 2, 3, Gear
+const max_tier = [4, 10, 10, 10, 2]; // Max tier for Weapon, Equipment 1, 2, 3, Gear
 const reverse_ingame_stats = false; // Estimate raw numbers if provided data is sourced ingame
 
 // Equipment max levels per tier
@@ -58,24 +58,24 @@ const equipment_stats = {
 	},
 
 'charm' : {
-	//	param			   N	T1		T2		T3		T4		T5		T6		T7		T8		T9
-		'crit_res'		: [0,	80, 	130,	180,	250,	280,	320,	360,	380,	400	],
-		'critdamage_res': [0,	0, 		0, 		0,		1000,	1500,	1800,	2100,	2400,	2700],
-		'crit_rate'		: [0,	0, 		0, 		0,		0,		120,	150,	180,	200,	250	],
+	//	param			   N	T1		T2		T3		T4		T5		T6		T7		T8		T9		T10
+		'crit_res'		: [0,	80, 	130,	180,	250,	280,	320,	360,	380,	400,	420	],
+		'critdamage_res': [0,	0, 		0, 		0,		1000,	1500,	1800,	2100,	2400,	2700,	3000],
+		'crit_rate'		: [0,	0, 		0, 		0,		0,		120,	150,	180,	200,	250,	300	],
 	},
 
 'watch' : {
-	//	param			   N	T1		T2		T3		T4		T5		T6		T7		T8		T9
-		'crit_rate'		: [0,	80, 	130,	180,	250,	280,	320,	360,	400,	440	],
-		'crit_damage' 	: [0,	0, 		0, 		0,		1000,	1500,	1800,	2100,	2400,	2500],
-		'hp%' 			: [0,	0, 		0, 		0,		0,		5,		7,		9,		11,		13],
+	//	param			   N	T1		T2		T3		T4		T5		T6		T7		T8		T9		T10
+		'crit_rate'		: [0,	80, 	130,	180,	250,	280,	320,	360,	400,	440,	480	],
+		'crit_damage' 	: [0,	0, 		0, 		0,		1000,	1500,	1800,	2100,	2400,	2500,	2600],
+		'hp%' 			: [0,	0, 		0, 		0,		0,		5,		7,		9,		11,		13,		1500],
 	},
 
 'necklace' : {
-	//	param			   N	T1		T2		T3		T4		T5		T6		T7		T8		T9
-		'healing%' 		: [0,	8, 		13, 	18,		25, 	28,		32,		35,		38,		40],
-		'cc_str%' 		: [0,	8, 		13, 	18,		25, 	28,		32,		35,		38,		38],
-		'attack%' 		: [0,	0, 		0, 		0,		0,		4,		6,		8,		10,		14],
+	//	param			   N	T1		T2		T3		T4		T5		T6		T7		T8		T9		T10
+		'healing%' 		: [0,	8, 		13, 	18,		25, 	28,		32,		35,		38,		40,		42],
+		'cc_str%' 		: [0,	8, 		13, 	18,		25, 	28,		32,		35,		38,		38,		38],
+		'attack%' 		: [0,	0, 		0, 		0,		0,		4,		6,		8,		10,		14,		18],
 	},
 
 };
