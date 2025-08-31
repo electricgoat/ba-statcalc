@@ -9,7 +9,7 @@
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 12px 20px;
+    gap: 12px 14px;
     line-height: normal;
 }
 
@@ -64,16 +64,23 @@
 }
 
 .charactertable-controls div.controls-school > span {
-    margin: 0 -2px!important;
+    margin: 0 1!important;
 }
 
 .charactertable-controls div.controls-attack > span,
-.charactertable-controls div.controls-armor > span {
+.charactertable-controls div.controls-armor > span,
+.charactertable-controls div.controls-role > span {
     border: 1px solid #2d4c72;
 }
 
+.charactertable-controls div.controls-attack img,
+.charactertable-controls div.controls-armor img,
+.charactertable-controls div.controls-role img  {
+    opacity: 0.8;
+}
+
 .charactertable-controls div.controls-pool > span {
-    width: 82px;
+    width: 70px;
     height: 26px;
     border-width: 0 3px;
     border-style: solid;
@@ -91,9 +98,33 @@
     text-align: right;
 }
 
+.charactertable-controls div.controls-pool > span.pool-anniversary {
+    width: 82px;
+}
+
 .charactertable-controls div.controls-school span.school-abydos > img {
     object-position: 0 3px;
 }
+
+.charactertable-controls div.controls-search {
+    flex-grow: 1;
+    min-width: 240px;
+}
+
+.charactertable-controls div.controls-search input {
+    height: 34px;
+    width: 100%!important;
+    min-width: 240px;
+    box-sizing: border-box;
+
+    padding-left: 0.4em;
+    padding-right: 0.4em;
+    border: 1px solid #a2a9b1;
+    border-radius: 2px;
+}
+
+
+
 
 @media (max-width: 1200px) {
     .charactertable-controls div.controls-school,
@@ -102,6 +133,15 @@
         text-align: center;
     }
 }
+
+@media (max-width: 480px) {
+    .charactertable-controls div.controls-school > span {
+        margin: 0 -2!important;
+    }
+}
+
+
+
 
 /* .charactertable-controls div.controls-attack,
 .charactertable-controls div.controls-armor {

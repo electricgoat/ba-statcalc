@@ -1,37 +1,68 @@
 <templatestyles src="CharacterTableControls/style.css" />
 <includeonly>
-    <div id="charactertable-filter" class="charactertable-controls limitwidth-1280">
-        <div class="controls controls-attack mw-no-invert">
-            <span title="Explosive" class="attack-explosive bg-explosive" data-toggle="attack-explosive">[[File:Attack.png|x28px|link=|alt=Explosive]]</span>
-            <span title="Penetration" class="attack-penetration bg-penetration" data-toggle="attack-penetration">[[File:Attack.png|x28px|link=|alt=Penetration]]</span>
-            <span title="Mystic" class="attack-mystic bg-mystic" data-toggle="attack-mystic">[[File:Attack.png|x28px|link=|alt=Mystic]]</span>
-            <span title="Sonic" class="attack-sonic bg-sonic" data-toggle="attack-sonic">[[File:Attack.png|x28px|link=|alt=Sonic]]</span>
+    <div id="charactertable-filter" class="charactertable-controls limitwidth-1280"><!--
+-->
+        <div class="controls controls-search"></div><!--
+-->
+        <div class="controls controls-attack mw-no-invert"><span title="Explosive" class="attack-explosive bg-explosive"
+                data-toggle="attack-explosive">[[File:Attack.png|x28px|link=|alt=Explosive]]</span><span
+                title="Penetration" class="attack-penetration bg-penetration"
+                data-toggle="attack-penetration">[[File:Attack.png|x28px|link=|alt=Penetration]]</span><span
+                title="Mystic" class="attack-mystic bg-mystic"
+                data-toggle="attack-mystic">[[File:Attack.png|x28px|link=|alt=Mystic]]</span><span title="Sonic"
+                class="attack-sonic bg-sonic"
+                data-toggle="attack-sonic">[[File:Attack.png|x28px|link=|alt=Sonic]]</span></div><!--
+-->
+        <div class="controls controls-armor mw-no-invert"><span title="Light" class="armor-light bg-light"
+                data-toggle="armor-light">[[File:Armor.png|x28px|link=|alt=Light]]</span><span title="Heavy"
+                class="armor-heavy bg-heavy"
+                data-toggle="armor-heavy">[[File:Armor.png|x28px|link=|alt=Heavy]]</span><span title="Special"
+                class="armor-special bg-special"
+                data-toggle="armor-special">[[File:Armor.png|x28px|link=|alt=Special]]</span><span title="Elastic"
+                class="armor-elastic bg-elastic"
+                data-toggle="armor-elastic">[[File:Armor.png|x28px|link=|alt=Elastic]]</span>
         </div>
-        <div class="controls controls-armor mw-no-invert">
-            <span title="Light" class="armor-light bg-light" data-toggle="armor-light">[[File:Armor.png|x28px|link=|alt=Light]]</span>
-            <span title="Heavy" class="armor-heavy bg-heavy" data-toggle="armor-heavy">[[File:Armor.png|x28px|link=|alt=Heavy]]</span>
-            <span title="Special" class="armor-special bg-special" data-toggle="armor-special">[[File:Armor.png|x28px|link=|alt=Special]]</span>
-            <span title="Elastic" class="armor-elastic bg-elastic" data-toggle="armor-elastic">[[File:Armor.png|x28px|link=|alt=Elastic]]</span>
-        </div>
-        <div class="controls controls-class">
-            <span class="class-striker" data-toggle="class-striker">Striker</span>
-            <span class="class-special" data-toggle="class-special">Special</span>
-        </div>
-        <div class="controls controls-school">
-            <span title="Abydos" class="school-abydos" data-toggle="school-abydos">[[File:Abydos.png|32px|link=|alt=Abydos]]</span>
-            <span title="Arius" class="school-arius" data-toggle="school-arius">[[File:Arius.png|32px|link=|alt=Arius]]</span>
-            <span title="Gehenna" class="school-gehenna" data-toggle="school-gehenna">[[File:Gehenna.png|32px|link=|alt=Gehenna]]</span>
-            <span title="Hyakkiyako" class="school-hyakkiyako" data-toggle="school-hyakkiyako">[[File:Hyakkiyako.png|32px|link=|alt=Hyakkiyako]]</span>
-            <span title="Millennium" class="school-millennium" data-toggle="school-millennium">[[File:Millennium.png|32px|link=|alt=Millennium]]</span>
-            <span title="Red Winter" class="school-red_winter" data-toggle="school-red_winter">[[File:Red Winter.png|32px|link=|alt=Red Winter]]</span>
-            <span title="Shanhaijing" class="school-shanhaijing" data-toggle="school-shanhaijing">[[File:Shanhaijing.png|32px|link=|alt=Shanhaijing]]</span>
-            <span title="Special Response Team" class="school-srt" data-toggle="school-srt">[[File:SRT.png|32px|link=|alt=Special Response Team]]</span>
-            <span title="Trinity" class="school-trinity" data-toggle="school-trinity">[[File:Trinity.png|32px|link=|alt=Trinity]]</span>
-            <span title="Valkyrie" class="school-valkyrie" data-toggle="school-valkyrie">[[File:Valkyrie.png|32px|link=|alt=Valkyrie]]</span>
-            <span title="No school" class="school-etc" data-toggle="school-etc">[[File:Schale.png|32px|link=|alt=ETC]]</span>
-        </div>
+
+        <div class="controls controls-role">
+            <span class="role-tank" data-toggle="role-tank">Tank</span>
+            <span class="role-attacker" data-toggle="role-attacker">Attacker</span>
+            <span class="role-healer" data-toggle="role-healer">Healer</span>
+            <span class="role-support" data-toggle="role-support">Support</span>
+            <span class="role-ts" data-toggle="role-ts">T.S.</span>
+        </div><!--
+-->
+        <div class="controls controls-class"><span class="class-striker" data-toggle="class-striker">Striker</span><span
+                class="class-special" data-toggle="class-special">Special</span></div><!--
+-->
+        <div class="controls controls-school mw-no-invert"><span title="Abydos" class="school-abydos"
+                data-toggle="school-abydos">[[File:Abydos.png|32px|link=|alt=Abydos]]</span><span title="Arius"
+                class="school-arius" data-toggle="school-arius">[[File:Arius.png|32px|link=|alt=Arius]]</span><span
+                title="Gehenna" class="school-gehenna"
+                data-toggle="school-gehenna">[[File:Gehenna.png|32px|link=|alt=Gehenna]]</span><span title="Hyakkiyako"
+                class="school-hyakkiyako"
+                data-toggle="school-hyakkiyako">[[File:Hyakkiyako.png|32px|link=|alt=Hyakkiyako]]</span><span
+                title="Millennium" class="school-millennium"
+                data-toggle="school-millennium">[[File:Millennium.png|32px|link=|alt=Millennium]]</span><span
+                title="Red Winter" class="school-red_winter" data-toggle="school-red_winter">[[File:Red
+                Winter.png|32px|link=|alt=Red Winter]]</span><span title="Shanhaijing" class="school-shanhaijing"
+                data-toggle="school-shanhaijing">[[File:Shanhaijing.png|32px|link=|alt=Shanhaijing]]</span><span
+                title="Special Response Team" class="school-srt"
+                data-toggle="school-srt">[[File:SRT.png|32px|link=|alt=Special Response Team]]</span><span
+                title="Trinity" class="school-trinity"
+                data-toggle="school-trinity">[[File:Trinity.png|32px|link=|alt=Trinity]]</span><span title="Valkyrie"
+                class="school-valkyrie"
+                data-toggle="school-valkyrie">[[File:Valkyrie.png|32px|link=|alt=Valkyrie]]</span><span
+                title="Highlander" class="school-highlander"
+                data-toggle="school-highlander">[[File:Highlander.png|32px|link=|alt=Highlander]]</span><span
+                title="Wildhunt" class="school-wildhunt"
+                data-toggle="school-wildhunt">[[File:Wildhunt.png|32px|link=|alt=Wildhunt]]</span><span
+                title="No school" class="school-etc"
+                data-toggle="school-etc">[[File:Schale.png|32px|link=|alt=ETC]]</span>
+            </div><!--
+-->
         <div class="controls controls-pool">
             <span class="pool-regular" data-toggle="pool-regular">Regular</span>
+            <span class="pool-archive" data-toggle="pool-archive">Archive</span>
             <span class="pool-event" data-toggle="pool-event">Event</span>
             <span class="pool-limited" data-toggle="pool-limited">Limited</span>
             <span class="pool-anniversary condensed" data-toggle="pool-anniversary">Anniversary</span>
