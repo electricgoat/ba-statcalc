@@ -1,6 +1,6 @@
 // Internal filter array
-let charactertable_filters = [];
-let quick_filter = {}; // Groups that have quick filter buttons
+let charactertableFilters = [];
+let quickFilter = {}; // Groups that have quick filter buttons
 let lastSearchSegments = [];
 
 // Map keywords to button groups/values
@@ -34,11 +34,13 @@ const charactertable_search_keywords = {
 
     'attacker': { group: 'role', value: 'attacker' },
     'tank': { group: 'role', value: 'tank' },
+    'tanker': { group: 'role', value: 'tank' },
     'healer': { group: 'role', value: 'healer' },
     'support': { group: 'role', value: 'support' },
     'tacticalsupport': { group: 'role', value: 'ts' },
     'ts': { group: 'role', value: 'ts' },
     't.s': { group: 'role', value: 'ts' },
+    't.s.': { group: 'role', value: 'ts' },
 
     'striker': { group: 'class', value: 'striker' },
     'special': { group: 'class', value: 'special' },
@@ -68,7 +70,7 @@ const charactertable_search_keywords = {
 
 
 $(document).ready(function() {
-    $(".controls-search").append(
+    $(".controls-search").html(
         $('<input>', {
             type: 'text',
             id: 'charactertable-search',
@@ -85,17 +87,17 @@ $(document).ready(function() {
 function initCharacterTableFilters() {
     const filter = $("#charactertable-filter");
 
-    quick_filter.groups = new Set();
-    quick_filter.filters = {};
+    quickFilter.groups = new Set();
+    quickFilter.filters = {};
 
     $.each(filter.find('div.controls > span'), function() {
         //var toggle = $(this).attr('data-toggle');
         const [group, value] = $(this).attr('data-toggle').split('-');
         //console.log('Quick filter button:', group, value);
         if (typeof(group) !== 'undefined') {
-            quick_filter.groups.add(group);
-            if (!quick_filter.filters.hasOwnProperty(group)) quick_filter.filters[group] = new Set();
-            quick_filter.filters[group].add(value);
+            quickFilter.groups.add(group);
+            if (!quickFilter.filters.hasOwnProperty(group)) quickFilter.filters[group] = new Set();
+            quickFilter.filters[group].add(value);
         } 
     });
 
@@ -111,19 +113,19 @@ function initCharacterTableFilters() {
                     initialFilters.push({type: 'text', src: 'textfield', value: charactertable_search_keywords[seg].text});
                 } else {
                     const {group, value} = charactertable_search_keywords[seg];
-                    const is_quickfilter = quick_filter.groups.has(group);
+                    const is_quickfilter = quickFilter.groups.has(group);
                     initialFilters.push({type: 'param', src: is_quickfilter?'quickfilter':'textfield', group, value});
                 }
             } else if (seg.includes('-')) {
                 const [group, value] = seg.split('-');
-                const is_quickfilter = quick_filter.groups.has(group);
+                const is_quickfilter = quickFilter.groups.has(group);
                 initialFilters.push({type: 'param', src: is_quickfilter?'quickfilter':'textfield', group, value});
             } else {
                 initialFilters.push({type: 'text', src:'textfield', value: seg});
             }
         }
     }
-    charactertable_filters = initialFilters;
+    charactertableFilters = initialFilters;
 
 
     // Event handlers
@@ -135,7 +137,7 @@ function initCharacterTableFilters() {
     $("#charactertable-filter div.controls > span").each(function() {
         const toggle = $(this).attr('data-toggle');
         const [group, value] = toggle.split('-');
-        const active = charactertable_filters.some(f => f.type === 'param' && f.group === group && f.value === value);
+        const active = charactertableFilters.some(f => f.type === 'param' && f.group === group && f.value === value);
         $(this).toggleClass('active', active).toggleClass('inactive', !active);
     });
 }
@@ -146,11 +148,11 @@ function characterTableToggle(toggleItem) {
     const [group, value] = toggle.split('-');
 
     // Remove any existing filter for this group/value
-    charactertable_filters = charactertable_filters.filter(f => !((f.type === 'param' || f.type === 'keyword') && f.src === 'quickfilter' && f.group === group && f.value === value));
+    charactertableFilters = charactertableFilters.filter(f => !((f.type === 'param' || f.type === 'keyword') && f.src === 'quickfilter' && f.group === group && f.value === value));
     if (toggleItem.hasClass("inactive")) {
         //console.log('Adding filter', {type: 'param', group, value});
         toggleItem.addClass('active').removeClass('inactive');
-        charactertable_filters.push({type: 'param', src: 'quickfilter', group, value});
+        charactertableFilters.push({type: 'param', src: 'quickfilter', group, value});
     } else {
         //console.log('Removing filter', {type: 'param', group, value});
         toggleItem.addClass('inactive').removeClass('active');
@@ -170,35 +172,35 @@ function characterTableTextFilter(searchStr) {
     lastSearchSegments = segments;
 
     // Remove all previous textfield filters from array, readd new ones
-    charactertable_filters = charactertable_filters.filter(f => f.src !== 'textfield');
+    charactertableFilters = charactertableFilters.filter(f => f.src !== 'textfield');
 
     for (const seg of segments) {
         if (charactertable_search_keywords.hasOwnProperty(seg)) {
             //console.log('Keyword match:', seg, charactertable_search_keywords[seg]);
             if (charactertable_search_keywords[seg].hasOwnProperty('text')) {
                 //console.log('Adding text filter:', charactertable_search_keywords[seg].text);
-                charactertable_filters.push({type: 'text', src: 'textfield', value: charactertable_search_keywords[seg].text});
+                charactertableFilters.push({type: 'text', src: 'textfield', value: charactertable_search_keywords[seg].text});
             } else {
                 //console.log('Adding param filter:', charactertable_search_keywords[seg]);
                 const {group, value} = charactertable_search_keywords[seg];
-                const is_quickfilter = quick_filter.groups.has(group);
-                charactertable_filters.push({type: 'param', src: is_quickfilter?'quickfilter':'textfield', group, value});
+                const is_quickfilter = quickFilter.groups.has(group);
+                charactertableFilters.push({type: 'param', src: is_quickfilter?'quickfilter':'textfield', group, value});
             }
         } else if (seg.length > 2 && seg.includes(':')) {
             const [group, value] = seg.split(':');
-            const is_quickfilter = quick_filter.groups.has(group);
-            if (quick_filter.groups.has(group) && quick_filter.filters[group].has(value)) {
+            const is_quickfilter = quickFilter.groups.has(group);
+            if (quickFilter.groups.has(group) && quickFilter.filters[group].has(value)) {
                 //console.log('Adding quickfilter param filter:', {group, value});
-                charactertable_filters.push({type: 'param', src: is_quickfilter?'quickfilter':'textfield', group, value});
-            } else if (quick_filter.groups.has(group)) {
+                charactertableFilters.push({type: 'param', src: is_quickfilter?'quickfilter':'textfield', group, value});
+            } else if (quickFilter.groups.has(group)) {
                 // Do nothing, wait for valid quickfilter value for this group
             }
             else {
                 //console.log('Adding textfield param filter:', {group, value});
-                charactertable_filters.push({type: 'param', src: 'textfield', group, value});
+                charactertableFilters.push({type: 'param', src: 'textfield', group, value});
             }
         } else if (seg.length > 2) {
-            charactertable_filters.push({type: 'text', src: 'textfield', value: seg});
+            charactertableFilters.push({type: 'text', src: 'textfield', value: seg});
         }
     }
 
@@ -207,7 +209,7 @@ function characterTableTextFilter(searchStr) {
     $("#charactertable-filter div.controls > span").each(function() {
         const toggle = $(this).attr('data-toggle');
         const [group, value] = toggle.split('-');
-        const active = charactertable_filters.some(f => f.src === 'quickfilter' && f.group === group && f.value === value);
+        const active = charactertableFilters.some(f => f.src === 'quickfilter' && f.group === group && f.value === value);
         $(this).toggleClass('active', active).toggleClass('inactive', !active);
     });
 
@@ -220,7 +222,7 @@ function updateFiltersUI() {
     // Update text field (only param/text filters) IF not focused
     const $search = $("#charactertable-search");
     if (!$search.is(":focus")) {
-        $search.val(filtersToTextField(charactertable_filters));
+        $search.val(filtersToTextField(charactertableFilters));
     }
 
     // Apply filtering to table
@@ -231,7 +233,7 @@ function updateFiltersUI() {
 
         // Collect all filters by group
         const filteredGroups = {};
-        for (const f of charactertable_filters) {
+        for (const f of charactertableFilters) {
             if (f.type === 'param' || f.type === 'keyword') {
                 if (!filteredGroups[f.group]) filteredGroups[f.group] = new Set();
                 filteredGroups[f.group].add(f.value);
@@ -248,7 +250,7 @@ function updateFiltersUI() {
 
         // Check text filters
         if (showRow) {
-            for (const f of charactertable_filters) {
+            for (const f of charactertableFilters) {
                 if (f.type === 'text') {
                     if (!nameCell.length) {
                         showRow = false;
@@ -280,7 +282,7 @@ function updateFiltersUI() {
     });
 
     // Update URL anchor
-    window.location.hash = encodeURIComponent(filtersToURI(charactertable_filters));
+    window.location.hash = encodeURIComponent(filtersToURI(charactertableFilters));
 }
 
 

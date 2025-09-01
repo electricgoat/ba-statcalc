@@ -111,14 +111,15 @@
     min-width: 240px;
 }
 
-.charactertable-controls div.controls-search input {
+.charactertable-controls div.controls-search input,
+.charactertable-controls div.controls-search .input-placeholder {
     height: 34px;
     width: 100%!important;
     min-width: 240px;
     box-sizing: border-box;
-
     padding-left: 0.4em;
     padding-right: 0.4em;
+    background-color: #fff;
     border: 1px solid #a2a9b1;
     border-radius: 2px;
 }
