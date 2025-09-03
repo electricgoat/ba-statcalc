@@ -70,14 +70,6 @@ const charactertable_search_keywords = {
 
 
 $(document).ready(function() {
-    $(".controls-search").html(
-        $('<input>', {
-            type: 'text',
-            id: 'charactertable-search',
-            placeholder: 'Filter...',
-        })
-    );
-    
     initCharacterTableFilters();
     updateFiltersUI();
     lastSearchSegments = $("#charactertable-search").val().toLowerCase().split(/[\s_,;+\-]+/).filter(seg => seg.length >= 2);
@@ -90,6 +82,14 @@ function initCharacterTableFilters() {
     quickFilter.groups = new Set();
     quickFilter.filters = {};
 
+    $(".controls-search").html(
+        $('<input>', {
+            type: 'text',
+            id: 'charactertable-search',
+            placeholder: 'Filter...',
+        })
+    );
+    
     $.each(filter.find('div.controls > span'), function() {
         //var toggle = $(this).attr('data-toggle');
         const [group, value] = $(this).attr('data-toggle').split('-');
@@ -219,6 +219,8 @@ function characterTableTextFilter(searchStr) {
 
 // Update UI and filtering
 function updateFiltersUI() {
+    const $table = $("#charactertable");
+
     // Update text field (only param/text filters) IF not focused
     const $search = $("#charactertable-search");
     if (!$search.is(":focus")) {
@@ -280,6 +282,8 @@ function updateFiltersUI() {
 
         $(this).toggleClass('visible', showRow).toggleClass('hidden', !showRow);
     });
+
+    $table.trigger("sortEnd.tablesorter");
 
     // Update URL anchor
     window.location.hash = encodeURIComponent(filtersToURI(charactertableFilters));
@@ -373,4 +377,82 @@ function parseTextField(str) {
             }
             return {type: 'text', value: seg};
         });
+}
+
+
+
+///
+/// Global release cutoff line
+///
+$(document).ready(function () {
+    const $table = $("#charactertable");
+
+    $table.on("sortEnd.tablesorter", function () {
+        const config = $table.data("tablesorter").config;
+        const sortList = config.sortList;
+
+        // Check if sorted by the 15th column (index 14) ASC or DESC
+        if (sortList.length >= 1 && sortList[0][0] === 14 && sortList[0][1] < 2) {
+            addCutoffClass($table, sortList[0][1]);
+        } else {
+            $table.find("tr.global-line").removeClass("global-line line-top line-bottom");
+        }
+    });
+
+    // Trigger initial calculation
+    $table.trigger("sortEnd.tablesorter");
+});
+
+function addCutoffClass($table, sortDirection) {
+    const isAscending = sortDirection === 0;
+
+    const now = new Date();
+    const jstNow = new Date(
+        now.getTime() + (9 * 60 + now.getTimezoneOffset()) * 60000
+    );
+    const cutoffDate = new Date(
+        jstNow.getFullYear(),
+        jstNow.getMonth(),
+        jstNow.getDate(),
+        11, 0, 0
+    ).getTime();
+
+    const $rows = $table.find("tbody tr.visible");
+    let cutoffIndex = -1;
+
+    $rows.each(function (index) {
+        const $row = $(this);
+        const dateAttr = $row.attr("data-releasedate-gl");
+
+        if (!dateAttr) {
+            // Missing date is treated as future (ASC) or skip (DESC)
+            if (isAscending) cutoffIndex = index;
+            return cutoffIndex >= 0 ? false : true;
+        }
+
+        const releaseTime = new Date(dateAttr.replace(/\//g, "-")).getTime();
+        if (isNaN(releaseTime)) {
+            if (isAscending) cutoffIndex = index;
+            return cutoffIndex >= 0 ? false : true;
+        }
+
+        if (isAscending) {
+            if (releaseTime > cutoffDate) {
+                cutoffIndex = index;
+                return false;
+            }
+        } else {
+            if (releaseTime <= cutoffDate) {
+                cutoffIndex = index - 1;
+                return false;
+            }
+        }
+    });
+
+    $table.find("tr.global-line").removeClass("global-line line-top line-bottom");
+    if (cutoffIndex >= 0 && cutoffIndex < $rows.length) {
+        $rows.eq(cutoffIndex)
+            .addClass("global-line")
+            .addClass(isAscending ? "line-top" : "line-bottom");
+    }
 }
