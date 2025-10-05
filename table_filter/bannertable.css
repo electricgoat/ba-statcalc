@@ -1,0 +1,98 @@
+.bannertable {
+    text-align: center;
+}
+
+.bannertable .image {
+    width: 300px;
+    position: relative;
+}
+
+.bannertable .date {
+    width: 100px;
+}
+
+
+.bannertable tr.type-limitedgacha,
+.bannertable tr.type-fesgacha {
+    background-color: #fff2ed;
+}
+
+.type-limitedgacha td.image::after,
+.type-fesgacha td.image::after {
+    content: "Limited!";
+    display: block;
+    height: 24px;
+    width: 66px;
+    top: 16px;
+    left: 10px;
+    position: absolute;
+    background: #e54933;
+    background: repeating-linear-gradient( 115deg, #e15634, #e15634 4px, #e46b41 4px, #e46b41 8px);
+    color: white;
+    border-radius: 6px;
+    border: 2px solid #69290a;
+    font-size: 14px;
+    font-weight: bold;
+    text-shadow: 0px 0px 2px #69290a;
+    padding: 0px 0px;
+    text-align: center;
+    transform: skew(-10deg) rotate(-10deg);
+    filter: drop-shadow(1px 1px 1px #00000066);
+}
+
+.type-fesgacha td.image::after {
+    content: "Anniversary!";
+    width: 90px;
+}
+
+@media (min-width: 1024px) {
+    .bannertable .period {
+        width: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+
+}
+
+
+/* Global releases cutoff line */
+.bannertable {
+    position: relative;
+}
+
+.bannertable tr.line-top,
+.bannertable tr.line-bottom {
+    position: relative;
+}
+
+.bannertable tr.line-top td {
+    border-top: 11px solid var(--border-color-base, #a2a9b1);
+}
+
+.bannertable tr.line-bottom td {
+    border-bottom: 11px solid var(--border-color-base, #a2a9b1);
+}
+
+.bannertable tr.line-top td:nth-child(2):before,
+.bannertable tr.line-bottom td:nth-child(2):after {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: #fff;
+    font-size: 10px;
+    line-height: 10px;
+    font-stretch: expanded;
+}
+
+.bannertable tr.global-line.line-top td:nth-child(2):before {
+    content: "▲ Release Line ▲";
+    top: -5px;
+}
+
+.bannertable tr.global-line.line-bottom td:nth-child(2):after {
+    content: "▼ Release Line ▼";
+    bottom: -5px;
+}

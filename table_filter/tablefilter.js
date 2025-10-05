@@ -1,91 +1,132 @@
 // Internal filter array
-let charactertableFilters = [];
+let tableFilters = [];
 let quickFilter = {}; // Groups that have quick filter buttons
 let lastSearchSegments = [];
 
+// Initial table sortlists, fist value should be the date column index
+const initSortList = {
+    'charactertable': [{14: "desc"}, {2: "desc"}, {1: "asc"}],
+    'bannertable': [{2: "desc"}, {0: "asc"}],
+}
+
 // Map keywords to button groups/values
-const charactertable_search_keywords = {
-    'gehenna': { group: 'school', value: 'gehenna' },
-    'trinity': { group: 'school', value: 'trinity' },
-    'valkyrie': { group: 'school', value: 'valkyrie' },
-    'highlander': { group: 'school', value: 'highlander' },
-    'wildhunt': { group: 'school', value: 'wildhunt' },
-    'abydos': { group: 'school', value: 'abydos' },
-    'arius': { group: 'school', value: 'arius' },
-    'millennium': { group: 'school', value: 'millennium' },
-    'red_winter': { group: 'school', value: 'red_winter' },
-    'srt': { group: 'school', value: 'srt' },
-    'etc': { group: 'school', value: 'etc' },
+const search_keywords = {
+    'charactertable' : {
+        'gehenna': { group: 'school', value: 'gehenna' },
+        'trinity': { group: 'school', value: 'trinity' },
+        'valkyrie': { group: 'school', value: 'valkyrie' },
+        'highlander': { group: 'school', value: 'highlander' },
+        'wildhunt': { group: 'school', value: 'wildhunt' },
+        'abydos': { group: 'school', value: 'abydos' },
+        'arius': { group: 'school', value: 'arius' },
+        'millennium': { group: 'school', value: 'millennium' },
+        'red_winter': { group: 'school', value: 'red_winter' },
+        'srt': { group: 'school', value: 'srt' },
+        'etc': { group: 'school', value: 'etc' },
 
-    'ar': { group: 'weapon', value: 'ar' },
-    'ft': { group: 'weapon', value: 'ft' },
-    'gl': { group: 'weapon', value: 'gl' },
-    'hg': { group: 'weapon', value: 'hg' },
-    'mg': { group: 'weapon', value: 'mg' },
-    'rg': { group: 'weapon', value: 'rg' },
-    'rl': { group: 'weapon', value: 'rl' },
-    'sg': { group: 'weapon', value: 'sg' },
-    'smg': { group: 'weapon', value: 'smg' },
-    'sr': { group: 'weapon', value: 'sr' },
+        'ar': { group: 'weapon', value: 'ar' },
+        'ft': { group: 'weapon', value: 'ft' },
+        'gl': { group: 'weapon', value: 'gl' },
+        'hg': { group: 'weapon', value: 'hg' },
+        'mg': { group: 'weapon', value: 'mg' },
+        'rg': { group: 'weapon', value: 'rg' },
+        'rl': { group: 'weapon', value: 'rl' },
+        'sg': { group: 'weapon', value: 'sg' },
+        'smg': { group: 'weapon', value: 'smg' },
+        'sr': { group: 'weapon', value: 'sr' },
 
-    'front': { group: 'position', value: 'front' },
-    'middle': { group: 'position', value: 'middle' },
-    'back': { group: 'position', value: 'back' },
+        'front': { group: 'position', value: 'front' },
+        'middle': { group: 'position', value: 'middle' },
+        'back': { group: 'position', value: 'back' },
 
-    'attacker': { group: 'role', value: 'attacker' },
-    'tank': { group: 'role', value: 'tank' },
-    'tanker': { group: 'role', value: 'tank' },
-    'healer': { group: 'role', value: 'healer' },
-    'support': { group: 'role', value: 'support' },
-    'tacticalsupport': { group: 'role', value: 'ts' },
-    'ts': { group: 'role', value: 'ts' },
-    't.s': { group: 'role', value: 'ts' },
-    't.s.': { group: 'role', value: 'ts' },
+        'attacker': { group: 'role', value: 'attacker' },
+        'tank': { group: 'role', value: 'tank' },
+        'tanker': { group: 'role', value: 'tank' },
+        'healer': { group: 'role', value: 'healer' },
+        'support': { group: 'role', value: 'support' },
+        'tacticalsupport': { group: 'role', value: 'ts' },
+        'ts': { group: 'role', value: 'ts' },
+        't.s': { group: 'role', value: 'ts' },
+        't.s.': { group: 'role', value: 'ts' },
 
-    'striker': { group: 'class', value: 'striker' },
-    'special': { group: 'class', value: 'special' },
+        'striker': { group: 'class', value: 'striker' },
+        'special': { group: 'class', value: 'special' },
 
-    'explosive': { group: 'attack', value: 'explosive' },
-    'red': { group: 'attack', value: 'explosive' },
-    'mystic': { group: 'attack', value: 'mystic' },
-    'blue': { group: 'attack', value: 'mystic' },
-    'penetration': { group: 'attack', value: 'penetration' },
-    'piercing': { group: 'attack', value: 'penetration' },
-    'yellow': { group: 'attack', value: 'penetration' },
-    'sonic': { group: 'attack', value: 'sonic' },
-    'purple': { group: 'attack', value: 'sonic' },
+        'explosive': { group: 'attack', value: 'explosive' },
+        'red': { group: 'attack', value: 'explosive' },
+        'mystic': { group: 'attack', value: 'mystic' },
+        'blue': { group: 'attack', value: 'mystic' },
+        'penetration': { group: 'attack', value: 'penetration' },
+        'piercing': { group: 'attack', value: 'penetration' },
+        'yellow': { group: 'attack', value: 'penetration' },
+        'sonic': { group: 'attack', value: 'sonic' },
+        'purple': { group: 'attack', value: 'sonic' },
 
-    'light': { group: 'armor', value: 'light' },
-    'heavy': { group: 'armor', value: 'heavy' },
-    'specialarmor': { group: 'armor', value: 'special' },
-    'elastic': { group: 'armor', value: 'elastic' },
+        'light': { group: 'armor', value: 'light' },
+        'heavy': { group: 'armor', value: 'heavy' },
+        'specialarmor': { group: 'armor', value: 'special' },
+        'elastic': { group: 'armor', value: 'elastic' },
 
-    // Text search keywords
-    'ᓀ‸ᓂ': { text: '"azusa"' },
-    '`‸´': { text: '"kasumi"' }, //'-`‸´-': { text: 'kasumi' },
-    '눈': { text: '"fuuka"' }, //'눈_눈': { text: 'fuuka' },
-    '囧': { text: '"koyuki"' },
-    'sexy': { text: '"seia"' },
+        // Text search keywords
+        'ᓀ‸ᓂ': { text: '"azusa"' },
+        '`‸´': { text: '"kasumi"' }, //'-`‸´-': { text: 'kasumi' },
+        '눈': { text: '"fuuka"' }, //'눈_눈': { text: 'fuuka' },
+        '囧': { text: '"koyuki"' },
+        'sexy': { text: '"seia"' },
+    },
+    'bannertable': {
+        'gl': { group: 'server', value: 'gl' },
+        'global': { group: 'server', value: 'gl' },
+        'jp': { group: 'server', value: 'jp' },
+        'japan': { group: 'server', value: 'jp' },
+
+        'regular': { group: 'type', value: 'pickupgacha' },
+        'normal': { group: 'type', value: 'pickupgacha' },
+        'common': { group: 'type', value: 'pickupgacha' },
+        'limited': { group: 'type', value: 'limitedgacha' },
+        'unique': { group: 'type', value: 'limitedgacha' },
+        'anni': { group: 'type', value: 'fesgacha' },
+        'anniversary': { group: 'type', value: 'fesgacha' },
+        'fes': { group: 'type', value: 'fesgacha' },
+        'fest': { group: 'type', value: 'fesgacha' },
+
+        'new': { group: 'release', value: 'new' },
+        'rerun': { group: 'release', value: 'rerun' },
+        'reprint': { group: 'release', value: 'rerun' },
+        'copy': { group: 'release', value: 'rerun' },
+
+        // Text search keywords
+        'ᓀ‸ᓂ': { text: '"azusa"' },
+        '`‸´': { text: '"kasumi"' }, //'-`‸´-': { text: 'kasumi' },
+        '눈': { text: '"fuuka"' }, //'눈_눈': { text: 'fuuka' },
+        '囧': { text: '"koyuki"' },
+        'sexy': { text: '"seia"' },
+    },
+    
 };
 
 
 $(document).ready(function() {
-    initCharacterTableFilters();
+    initTableFilters();
     updateFiltersUI();
-    lastSearchSegments = $("#charactertable-search").val().toLowerCase().split(/[\s_,;+\-]+/).filter(seg => seg.length >= 2);
+    lastSearchSegments = $("#table-search").val().toLowerCase().split(/[\s_,;+\-]+/).filter(seg => seg.length >= 2);
 });
 
 
-function initCharacterTableFilters() {
-    const filter = $("#charactertable-filter");
+function initTableFilters() {
+    const filter = $("#table-filter");
+    filterTarget = filter.data('target') !== undefined ? filter.data('target') : 'charactertable'; //global
+    textSearchCellIndex = filter.data('search-cell-index') !== undefined ? filter.data('search-cell-index') : 1; //global
 
     quickFilter.groups = new Set();
     quickFilter.filters = {};
 
+    let initialFilters = [];
+
     $(".controls-search").html(
         $('<input>', {
             type: 'text',
-            id: 'charactertable-search',
+            id: 'table-search',
             placeholder: 'Filter...',
         })
     );
@@ -99,20 +140,24 @@ function initCharacterTableFilters() {
             if (!quickFilter.filters.hasOwnProperty(group)) quickFilter.filters[group] = new Set();
             quickFilter.filters[group].add(value);
         } 
+
+        if ($(this).hasClass('active') && window.location.hash.length === 0) {
+            initialFilters.push({type: 'param', src: 'quickfilter', group, value});
+        }
     });
 
 
-    let initialFilters = [];
+    
     if (window.location.hash.length > 1) {
         const uri = decodeURIComponent(window.location.hash.substring(1));
         const segments = new Set(uri.split('_')); //.filter(seg => seg.length >= 2);
         for (let seg of segments) {
             seg = seg.replace(/^-+|-+$/g, '');
-            if (charactertable_search_keywords.hasOwnProperty(seg)) {
-                if (charactertable_search_keywords[seg].hasOwnProperty('text')) {
-                    initialFilters.push({type: 'text', src: 'textfield', value: charactertable_search_keywords[seg].text});
+            if (search_keywords[filterTarget].hasOwnProperty(seg)) {
+                if (search_keywords[filterTarget][seg].hasOwnProperty('text')) {
+                    initialFilters.push({type: 'text', src: 'textfield', value: search_keywords[filterTarget][seg].text});
                 } else {
-                    const {group, value} = charactertable_search_keywords[seg];
+                    const {group, value} = search_keywords[filterTarget][seg];
                     const is_quickfilter = quickFilter.groups.has(group);
                     initialFilters.push({type: 'param', src: is_quickfilter?'quickfilter':'textfield', group, value});
                 }
@@ -125,34 +170,34 @@ function initCharacterTableFilters() {
             }
         }
     }
-    charactertableFilters = initialFilters;
+    tableFilters = initialFilters;
 
 
     // Event handlers
-    filter.find("div.controls > span").addClass('inactive').on("click", function() { characterTableToggle($(this)); });
-    $("#charactertable-search").on("input", function() {characterTableTextFilter($(this).val()); });
+    filter.find("div.controls > span").addClass('inactive').on("click", function() { tableFilterToggle($(this)); });
+    $("#table-search").on("input", function() {tableTextFilter($(this).val()); });
 
 
     // Sync button states
-    $("#charactertable-filter div.controls > span").each(function() {
+    $("#table-filter div.controls > span").each(function() {
         const toggle = $(this).attr('data-toggle');
         const [group, value] = toggle.split('-');
-        const active = charactertableFilters.some(f => f.type === 'param' && f.group === group && f.value === value);
+        const active = tableFilters.some(f => f.type === 'param' && f.group === group && f.value === value);
         $(this).toggleClass('active', active).toggleClass('inactive', !active);
     });
 }
 
 
-function characterTableToggle(toggleItem) {
+function tableFilterToggle(toggleItem) {
     const toggle = $(toggleItem).attr('data-toggle');
     const [group, value] = toggle.split('-');
 
     // Remove any existing filter for this group/value
-    charactertableFilters = charactertableFilters.filter(f => !((f.type === 'param' || f.type === 'keyword') && f.src === 'quickfilter' && f.group === group && f.value === value));
+    tableFilters = tableFilters.filter(f => !((f.type === 'param' || f.type === 'keyword') && f.src === 'quickfilter' && f.group === group && f.value === value));
     if (toggleItem.hasClass("inactive")) {
         //console.log('Adding filter', {type: 'param', group, value});
         toggleItem.addClass('active').removeClass('inactive');
-        charactertableFilters.push({type: 'param', src: 'quickfilter', group, value});
+        tableFilters.push({type: 'param', src: 'quickfilter', group, value});
     } else {
         //console.log('Removing filter', {type: 'param', group, value});
         toggleItem.addClass('inactive').removeClass('active');
@@ -162,7 +207,7 @@ function characterTableToggle(toggleItem) {
 }
 
 
-function characterTableTextFilter(searchStr) {
+function tableTextFilter(searchStr) {
     const segments = searchStr.toLowerCase().split(/[\s_,;+\-]+/); //.filter(seg => seg.length >= 2);
     // Only update if segments changed
     if (segments.join('|') === lastSearchSegments.join('|')) {
@@ -172,44 +217,44 @@ function characterTableTextFilter(searchStr) {
     lastSearchSegments = segments;
 
     // Remove all previous textfield filters from array, readd new ones
-    charactertableFilters = charactertableFilters.filter(f => f.src !== 'textfield');
+    tableFilters = tableFilters.filter(f => f.src !== 'textfield');
 
     for (const seg of segments) {
-        if (charactertable_search_keywords.hasOwnProperty(seg)) {
-            //console.log('Keyword match:', seg, charactertable_search_keywords[seg]);
-            if (charactertable_search_keywords[seg].hasOwnProperty('text')) {
-                //console.log('Adding text filter:', charactertable_search_keywords[seg].text);
-                charactertableFilters.push({type: 'text', src: 'textfield', value: charactertable_search_keywords[seg].text});
+        if (search_keywords[filterTarget].hasOwnProperty(seg)) {
+            //console.log('Keyword match:', seg, search_keywords[filterTarget][seg]);
+            if (search_keywords[filterTarget][seg].hasOwnProperty('text')) {
+                //console.log('Adding text filter:', search_keywords[filterTarget][seg].text);
+                tableFilters.push({type: 'text', src: 'textfield', value: search_keywords[filterTarget][seg].text});
             } else {
-                //console.log('Adding param filter:', charactertable_search_keywords[seg]);
-                const {group, value} = charactertable_search_keywords[seg];
+                //console.log('Adding param filter:', search_keywords[filterTarget][seg]);
+                const {group, value} = search_keywords[filterTarget][seg];
                 const is_quickfilter = quickFilter.groups.has(group);
-                charactertableFilters.push({type: 'param', src: is_quickfilter?'quickfilter':'textfield', group, value});
+                tableFilters.push({type: 'param', src: is_quickfilter?'quickfilter':'textfield', group, value});
             }
         } else if (seg.length > 2 && seg.includes(':')) {
             const [group, value] = seg.split(':');
             const is_quickfilter = quickFilter.groups.has(group);
             if (quickFilter.groups.has(group) && quickFilter.filters[group].has(value)) {
                 //console.log('Adding quickfilter param filter:', {group, value});
-                charactertableFilters.push({type: 'param', src: is_quickfilter?'quickfilter':'textfield', group, value});
+                tableFilters.push({type: 'param', src: is_quickfilter?'quickfilter':'textfield', group, value});
             } else if (quickFilter.groups.has(group)) {
                 // Do nothing, wait for valid quickfilter value for this group
             }
             else {
                 //console.log('Adding textfield param filter:', {group, value});
-                charactertableFilters.push({type: 'param', src: 'textfield', group, value});
+                tableFilters.push({type: 'param', src: 'textfield', group, value});
             }
         } else if (seg.length > 2) {
-            charactertableFilters.push({type: 'text', src: 'textfield', value: seg});
+            tableFilters.push({type: 'text', src: 'textfield', value: seg});
         }
     }
 
     
     // Sync button states
-    $("#charactertable-filter div.controls > span").each(function() {
+    $("#table-filter div.controls > span").each(function() {
         const toggle = $(this).attr('data-toggle');
         const [group, value] = toggle.split('-');
-        const active = charactertableFilters.some(f => f.src === 'quickfilter' && f.group === group && f.value === value);
+        const active = tableFilters.some(f => f.src === 'quickfilter' && f.group === group && f.value === value);
         $(this).toggleClass('active', active).toggleClass('inactive', !active);
     });
 
@@ -219,23 +264,23 @@ function characterTableTextFilter(searchStr) {
 
 // Update UI and filtering
 function updateFiltersUI() {
-    const $table = $("#charactertable");
+    const $table = $("#"+filterTarget);
 
     // Update text field (only param/text filters) IF not focused
-    const $search = $("#charactertable-search");
+    const $search = $("#table-search");
     if (!$search.is(":focus")) {
-        $search.val(filtersToTextField(charactertableFilters));
+        $search.val(filtersToTextField(tableFilters));
     }
 
     // Apply filtering to table
-    $(".charactertable tr").each(function () {
+    $table.find("tr").each(function () {
         if ($(this).closest('thead').length) return;
         let showRow = true;
-        const nameCell = $(this).find("td").eq(1);
+        const textSearchCell = $(this).find("td").eq(textSearchCellIndex);
 
         // Collect all filters by group
         const filteredGroups = {};
-        for (const f of charactertableFilters) {
+        for (const f of tableFilters) {
             if (f.type === 'param' || f.type === 'keyword') {
                 if (!filteredGroups[f.group]) filteredGroups[f.group] = new Set();
                 filteredGroups[f.group].add(f.value);
@@ -252,13 +297,13 @@ function updateFiltersUI() {
 
         // Check text filters
         if (showRow) {
-            for (const f of charactertableFilters) {
+            for (const f of tableFilters) {
                 if (f.type === 'text') {
-                    if (!nameCell.length) {
+                    if (!textSearchCell.length) {
                         showRow = false;
                         break;
                     }
-                    const cellText = nameCell.text().toLowerCase();
+                    const cellText = textSearchCell.text().toLowerCase();
                     if (f.value.startsWith('"') && f.value.endsWith('"')) {
                         // Whole-word match for quoted text
                         const quoted = f.value.slice(1, -1).toLowerCase();
@@ -286,7 +331,7 @@ function updateFiltersUI() {
     $table.trigger("sortEnd.tablesorter");
 
     // Update URL anchor
-    window.location.hash = encodeURIComponent(filtersToURI(charactertableFilters));
+    window.location.hash = encodeURIComponent(filtersToURI(tableFilters));
 }
 
 
@@ -382,25 +427,32 @@ function parseTextField(str) {
 
 
 ///
-/// Global release cutoff line
+/// Release cutoff line
 ///
 $(document).ready(function () {
-    const $table = $("#charactertable");
+    const $table = $("#"+filterTarget);
+
+    //TODO
+    // console.log('Setting initial sortlist ' + initSortList[filterTarget]);
+    // mw.loader.using("jquery.tablesorter", function() {
+    //         $("table.sortable").tablesorter({sortList: [{2: "desc"}, {1: "asc"}]});
+    //     });
 
     $table.on("sortEnd.tablesorter", function () {
-        const config = $table.data("tablesorter").config;
-        const sortList = config.sortList;
+            const config = $table.data("tablesorter").config;
+            const sortList = config.sortList;
 
-        // Check if sorted by the 15th column (index 14) ASC or DESC
-        if (sortList.length >= 1 && sortList[0][0] === 14 && sortList[0][1] < 2) {
-            addCutoffClass($table, sortList[0][1]);
-        } else {
-            $table.find("tr.global-line").removeClass("global-line line-top line-bottom");
-        }
-    });
+            if (sortList.length >= 1 && sortList[0][0] === Number(Object.keys(initSortList[filterTarget][0])[0]) && sortList[0][1] < 2) {
+                addCutoffClass($table, sortList[0][1]);
+            } else {
+                $table.find("tr.global-line").removeClass("global-line line-top line-bottom");
+            }
+        });
 
     // Trigger initial calculation
     $table.trigger("sortEnd.tablesorter");
+
+
 });
 
 function addCutoffClass($table, sortDirection) {
@@ -449,6 +501,7 @@ function addCutoffClass($table, sortDirection) {
         }
     });
 
+    //console.log('Cutoff index is '+cutoffIndex);
     $table.find("tr.global-line").removeClass("global-line line-top line-bottom");
     if (cutoffIndex >= 0 && cutoffIndex < $rows.length) {
         $rows.eq(cutoffIndex)

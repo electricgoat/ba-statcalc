@@ -1,4 +1,4 @@
-.charactertable-controls {
+.table-controls {
     user-select: none;
     box-sizing: border-box;
     background-color: #f8f9fa;
@@ -13,7 +13,7 @@
     line-height: normal;
 }
 
-.charactertable-controls div.controls > span {
+.table-controls div.controls > span {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -25,12 +25,12 @@
     position: relative;
 }
 
-.charactertable-controls .inactive {
+.table-controls .inactive {
     filter: grayscale(0.3);
     opacity: 0.4;
 }
 
-.charactertable-controls .controls-school .inactive {
+.table-controls .controls-school .inactive {
     filter: grayscale(0.8);
     opacity: 0.35;
 }
@@ -39,7 +39,7 @@
 
 
 
-.charactertable-controls div.controls-class > span {
+.table-controls div.controls-class > span {
     width: 82px;
     height: 26px;
     border-width: 0 3px;
@@ -52,36 +52,39 @@
     transform: skewX(-10deg);
 }
 
-.charactertable-controls div.controls-class > span.class-striker {
+.table-controls div.controls-class > span.class-striker {
     border-color: #f54d29;
 }
-.charactertable-controls div.controls-class > span.class-special {
+.table-controls div.controls-class > span.class-special {
     border-color: #0785fb;
 }
 
-.charactertable-controls div.controls-class > span {
+.table-controls div.controls-class > span {
     margin: 0 1px!important;
 }
 
-.charactertable-controls div.controls-school > span {
+.table-controls div.controls-school > span {
     margin: 0 1!important;
 }
 
-.charactertable-controls div.controls-attack > span,
-.charactertable-controls div.controls-armor > span,
-.charactertable-controls div.controls-role > span {
+.table-controls div.controls-attack > span,
+.table-controls div.controls-armor > span,
+.table-controls div.controls-role > span {
     border: 1px solid #2d4c72;
 }
 
-.charactertable-controls div.controls-attack img,
-.charactertable-controls div.controls-armor img,
-.charactertable-controls div.controls-role img  {
+.table-controls div.controls-attack img,
+.table-controls div.controls-armor img,
+.table-controls div.controls-role img  {
     opacity: 0.8;
 }
 
-.charactertable-controls div.controls-pool > span {
-    width: 70px;
+.table-controls div.controls.textbuttons > span,
+.table-controls div.controls-pool > span {
+    width: auto;
     height: 26px;
+    padding: 0 4px;
+    min-width: 60px;
     border-width: 0 3px;
     border-style: solid;
     border-radius: 8px;
@@ -93,26 +96,26 @@
     transform: skewX(-10deg);
 }
 
-.charactertable-controls div.controls-pool {
+.table-controls div.controls-pool {
     flex-grow: 1;
     text-align: right;
 }
 
-.charactertable-controls div.controls-pool > span.pool-anniversary {
+/* .table-controls div.controls-pool > span.pool-anniversary {
     width: 82px;
-}
+} */
 
-.charactertable-controls div.controls-school span.school-abydos > img {
+.table-controls div.controls-school span.school-abydos > img {
     object-position: 0 3px;
 }
 
-.charactertable-controls div.controls-search {
+.table-controls div.controls-search {
     flex-grow: 1;
     min-width: 240px;
 }
 
-.charactertable-controls div.controls-search input,
-.charactertable-controls div.controls-search .input-placeholder {
+.table-controls div.controls-search input,
+.table-controls div.controls-search .input-placeholder {
     height: 34px;
     width: 100%!important;
     min-width: 240px;
@@ -128,18 +131,19 @@
 
 
 @media (max-width: 1200px) {
-    .charactertable-controls div.controls-school,
-    .charactertable-controls div.controls-pool {
+    .table-controls div.controls-school,
+    .table-controls div.controls-pool {
         flex-grow: 1;
         text-align: center;
     }
 }
 
 @media (max-width: 480px) {
-    .charactertable-controls div.controls-school > span {
+    .table-controls div.controls-school > span {
         margin: 0 -2!important;
     }
 }
+
 
 
 
@@ -190,39 +194,3 @@ tr.pool-regular.global-line.line-bottom {
     position: relative;
 } */
 
-#charactertable {
-    position: relative;
-}
-
-#charactertable tr.line-top td {
-    border-top: 14px solid var(--border-color-base, #a2a9b1);
-}
-
-#charactertable tr.line-bottom td {
-    border-bottom: 14px solid var(--border-color-base, #a2a9b1);
-}
-
-#charactertable tr.line-top td:first-child:before,
-#charactertable tr.line-bottom td:first-child:after {
-    display: block;
-    position: absolute;
-    left: 0;
-    right: 0;
-    text-align: center;
-    color: #fff;
-    font-size: 10px;
-    line-height: 10px;
-    font-stretch: expanded;
-}
-
-
-
-#charactertable tr.global-line.line-top td:first-child:before {
-    content: "▲ Global Releases ▲";
-    margin-top: -12px;
-}
-
-#charactertable tr.global-line.line-bottom td:first-child:after {
-    content: "▼ Global Releases ▼";
-    margin-top: 2px;
-}
