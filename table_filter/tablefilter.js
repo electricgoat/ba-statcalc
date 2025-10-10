@@ -112,7 +112,6 @@ $(document).ready(function() {
     lastSearchSegments = $("#table-search").val().toLowerCase().split(/[\s_,;+\-]+/).filter(seg => seg.length >= 2);
 });
 
-
 function initTableFilters() {
     const filter = $("#table-filter");
     filterTarget = filter.data('target') !== undefined ? filter.data('target') : 'charactertable'; //global
@@ -123,6 +122,7 @@ function initTableFilters() {
 
     let initialFilters = [];
 
+    // Hydrate controls-search
     $(".controls-search").html(
         $('<input>', {
             type: 'text',
@@ -130,8 +130,14 @@ function initTableFilters() {
             placeholder: 'Filter...',
         })
     );
+
+    const controlButtons = filter.find('div.controls > span')
+    controlButtons.attr('role', 'button')
+    controlButtons.attr('aria-pressed', 'false')
+    controlButtons.attr('tabindex', '0')
     
-    $.each(filter.find('div.controls > span'), function() {
+    
+    $.each(controlButtons, function() {
         //var toggle = $(this).attr('data-toggle');
         const [group, value] = $(this).attr('data-toggle').split('-');
         //console.log('Quick filter button:', group, value);
@@ -174,7 +180,24 @@ function initTableFilters() {
 
 
     // Event handlers
-    filter.find("div.controls > span").addClass('inactive').on("click", function() { tableFilterToggle($(this)); });
+    controlButtons.addClass('inactive')
+    controlButtons.on("click", function() { tableFilterToggle($(this)); });
+    controlButtons.on("keydown", function(ev) {
+        if (ev.code === "Space") {
+            ev.preventDefault();
+        }
+        if (ev.code === "Enter") {
+            ev.preventDefault();
+            tableFilterToggle($(this));
+        }
+    });
+    controlButtons.on("keyup", function(ev) {
+        if (ev.code === "Space") {
+            ev.preventDefault();
+            tableFilterToggle($(this));
+        }
+    });
+
     $("#table-search").on("input", function() {tableTextFilter($(this).val()); });
 
 
@@ -197,10 +220,12 @@ function tableFilterToggle(toggleItem) {
     if (toggleItem.hasClass("inactive")) {
         //console.log('Adding filter', {type: 'param', group, value});
         toggleItem.addClass('active').removeClass('inactive');
+        $(toggleItem).attr('aria-pressed', 'true')
         tableFilters.push({type: 'param', src: 'quickfilter', group, value});
     } else {
         //console.log('Removing filter', {type: 'param', group, value});
         toggleItem.addClass('inactive').removeClass('active');
+        $(toggleItem).attr('aria-pressed', 'false')
         // Already removed above
     }
     updateFiltersUI();
@@ -405,25 +430,6 @@ function filtersToTextField(filters) {
         if (f.type === 'text') return f.value;
     }).join(' ');
 }
-
-// Utility: parse text field into param/text filters
-function parseTextField(str) {
-    const segments = str.toLowerCase().split(/[\s_,;+]+/).filter(seg => seg.length >= 2);
-    return segments
-        .filter(seg => {
-            // Only allow text search segments with length >= 3, or param segments
-            if (seg.includes(':')) return true;
-            return seg.length >= 3;
-        })
-        .map(seg => {
-            if (seg.includes(':')) {
-                const [group, value] = seg.split(':');
-                return {type: 'param', group, value};
-            }
-            return {type: 'text', value: seg};
-        });
-}
-
 
 
 ///
