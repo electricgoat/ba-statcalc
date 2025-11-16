@@ -7,6 +7,7 @@ let lastSearchSegments = [];
 const initSortList = {
     'charactertable': [{14: "desc"}, {2: "desc"}, {1: "asc"}],
     'bannertable': [{2: "desc"}, {0: "asc"}],
+    'gifttable': [],
 }
 
 // Map keywords to button groups/values
@@ -102,6 +103,7 @@ const search_keywords = {
         '囧': { text: '"koyuki"' },
         'sexy': { text: '"seia"' },
     },
+    'gifttable': {},
     
 };
 
@@ -287,6 +289,75 @@ function tableTextFilter(searchStr) {
 }
 
 
+function handleGiftTableFiltering($table) {
+    const tokens = tableFilters
+        .filter(f => f.type === 'text' || (f.type === 'param' && f.src === 'textfield'))
+        .map(f => {
+            let v = String(f.value).toLowerCase().trim();
+            if (v.startsWith('"') && v.endsWith('"')) v = v.slice(1, -1);
+            return v;
+        })
+        .filter(t => t.length > 0);
+
+    const paramGroups = {};
+    for (const f of tableFilters) {
+        if (f.type === 'param' && f.group) {
+            if (!paramGroups[f.group]) paramGroups[f.group] = new Set();
+            paramGroups[f.group].add(f.value);
+        }
+    }
+
+    const escapeRegExp = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    $table.find("tr").each(function () {
+        if ($(this).closest('thead').length) return;
+
+        const $row = $(this);
+        const $imgs = $row.find('img');
+        let rowMatches = false;
+
+        $imgs.css('border', '');
+
+        // Apply param filters (additive within each group)
+        let passesParams = true;
+        for (const group in paramGroups) {
+            if (!matchConditional(this, group, paramGroups[group])) {
+                passesParams = false;
+                break;
+            }
+        }
+        if (!passesParams) {
+            $row.css('display', 'none');
+            return;
+        }
+
+        if (tokens.length === 0) {
+            $row.css('display', 'table-row');
+            return;
+        }
+
+        // Whole-word match unlike other table types
+        $imgs.each(function () {
+            const alt = String($(this).attr('alt') || '').toLowerCase();
+            for (const t of tokens) {
+                if (!t) continue;
+                const re = new RegExp(`\\b${escapeRegExp(t)}\\b`, 'i');
+                if (re.test(alt)) {
+                    rowMatches = true;
+                    $(this).css('border', '4px solid red');
+                    break;
+                }
+            }
+        });
+
+        if (rowMatches) $row.css('display', 'table-row');
+        else $row.css('display', 'none');
+    });
+
+    //window.location.hash = encodeURIComponent(filtersToURI(tableFilters));
+}
+
+
 // Update UI and filtering
 function updateFiltersUI() {
     const $table = $("#"+filterTarget);
@@ -295,6 +366,12 @@ function updateFiltersUI() {
     const $search = $("#table-search");
     if (!$search.is(":focus")) {
         $search.val(filtersToTextField(tableFilters));
+    }
+
+    // Special handling for gifttable
+    if (filterTarget === 'gifttable') {
+        handleGiftTableFiltering($table);
+        return;
     }
 
     // Apply filtering to table
